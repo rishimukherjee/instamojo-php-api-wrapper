@@ -104,6 +104,7 @@ class Instamojo{
 		$options = array();
 		$options[CURLOPT_HTTPHEADER] = $headers;
 		$options[CURLOPT_RETURNTRANSFER] = true;
+		$options[CURLOPT_URL] = $request_path;
 
 		if($method == 'POST'){
 			$data_string = "";
@@ -114,13 +115,12 @@ class Instamojo{
 
 			$data_string = rtrim($data_string, '&');
 
-			$options[CURLOPT_URL] = $request_path;
 			$options[CURLOPT_POST] = count($data);
 			$options[CURLOPT_POSTFIELDS] = $data_string;
 		}
 
 		else if($method == 'GET'){
-
+			# Nothing to be done here.
 		}
 
 		else if($method == 'PUT'){
@@ -150,12 +150,43 @@ class Instamojo{
 	public function apiAuth(){
 		$response = $this->apiRequest('auth/', 'POST', $data = array('username' => $this->username, 'password' => $this->password));
 		$json = @json_decode($response['response'], true);
+		
 		if($response['errno']) throw new Exception("Exception: " . $response['error']);
+		if(!$json["success"]) throw new Exception("Application authentication failed. Check credentials");
+		
+		$this->APP_TOKEN = $json["token"];
 		return $json;
+	}
+
+	public function listAllOffers(){
+		$response = $this->apiRequest('offer/', 'GET');
+		if(!$this->APP_TOKEN) throw new Exception("Please authenticate your application.");
+		$json = @json_decode($response['response'], true);
+		if(!$json['success']) throw new Exception("Error in listing all offers.");
+		return $json;
+	}
+
+	public function listOneOfferDetail($slug){
+		$response = $this->apiRequest("offer/$slug/", 'GET');
+		if(!$this->APP_TOKEN) throw new Exception("Please authenticate your application.");
+		$json = @json_decode($response['response'], true);
+		if(!$json['success']) throw new Exception("Error in listing offer of $slug.");
+		return $json;
+	}
+
+	public function getUploadUrl(){
+		$response = $this->apiRequest('offer/get_file_upload_url/', 'GET');
+		if(!$this->APP_TOKEN) throw new Exception("Please authenticate your application.");
+		$json = @json_decode($response['response'], true);
+		if(!$json['success']) throw new Exception("Cannot get an URL.");
+		return $json["upload_url"];
 	}
 }
 
-$instance = new Instamojo('username', 'password', 'app_id');
+$instance = new Instamojo('rishimukherjee', 'gta123', '5afcc772ab8259eee2a7803a2fd87e78');
 $temp = $instance->apiAuth();
-print_r($temp);
+$temp1 = $instance->listAllOffers();
+$temp2 = $instance->listOneOfferDetail('curious-eyes');
+$temp3 = $instance->getUploadUrl();
+print_r($temp3);
 ?>
