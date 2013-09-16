@@ -183,10 +183,5 @@ class Instamojo{
 	}
 }
 
-$instance = new Instamojo('rishimukherjee', 'gta123', '5afcc772ab8259eee2a7803a2fd87e78');
-$temp = $instance->apiAuth();
-$temp1 = $instance->listAllOffers();
-$temp2 = $instance->listOneOfferDetail('curious-eyes');
-$temp3 = $instance->getUploadUrl();
-print_r($temp3);
+$instance = new Instamojo('username', 'password', 'gta123');
 ?>
