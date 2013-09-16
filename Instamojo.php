@@ -41,28 +41,55 @@ class Instamojo{
 		$this->setID($id);
 	}
 
+	/**
+		* Default destructor.
+	*/
 	public function __destruct(){
 		if($this->curl != null) curl_close($this->curl);
 	}
 
-	public function setUsername($username){
+	/**
+		* Set teh Username.
+		* @param string $username Instamojo username of the user.
+	*/
+	private function setUsername($username){
 		$this->username = (string) $username;
 	}
 
-	public function setPassword($password){
+	/**
+		* Set the password.
+		* @param string $password Instamojo username of the password.
+	*/
+	private function setPassword($password){
 		$this->password = (string) $password;
 	}
 
-	public function setID($id){
+	/**
+		* Set the ID.
+		* @param string $id Instamojo APP_ID provided by Instamojo.
+	*/
+
+	private function setID($id){
 		$this->APP_ID = (string) $id;
 	}
 
-	private function buildPath($url, $method){
-		return $url . $method;
+	/**
+		* Create the absolute path for the request.
+		* @param string $url The base URL (Here it is used by API_URL)
+		* @param string $path The relative path.
+	*/
+	private function buildPath($url, $path){
+		return $url . $path;
 	}
 
-	public function apiRequest($url, $method, array $data = null){
-		$url = (string) $url;
+	/**
+		* Request the instamojo API.
+		* @param string $path The relative path.
+		* @param string $method POST/GET/POST/DELETE
+		* @param array $data Data to be passed. 
+	*/
+	private function apiRequest($path, $method, array $data = null){
+		$path = (string) $path;
 		$method = (string) $method;
 		$data = (array) $data;
 
@@ -72,7 +99,7 @@ class Instamojo{
 			$headers[] = "X-Auth-Token: $this->APP_TOKEN";
 		}
 
-		$request_path = $this->buildPath(self::API_URL, $url);
+		$request_path = $this->buildPath(self::API_URL, $path);
 
 		$options = array();
 		$options[CURLOPT_HTTPHEADER] = $headers;
@@ -116,6 +143,10 @@ class Instamojo{
 		return array('response' => $response, 'headers' => $headers, 'error' => $errorMessage, 'errno' => $errorNumber);
 	}
 
+
+	/**
+		* Authenticate the application.
+	*/
 	public function apiAuth(){
 		$response = $this->apiRequest('auth/', 'POST', $data = array('username' => $this->username, 'password' => $this->password));
 		$json = @json_decode($response['response'], true);
