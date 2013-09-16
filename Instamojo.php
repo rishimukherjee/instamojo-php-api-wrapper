@@ -183,5 +183,5 @@ class Instamojo{
 	}
 }
 
-$instance = new Instamojo('username', 'password', 'gta123');
+$instance = new Instamojo('username', 'password', 'APP_ID');
 ?>
