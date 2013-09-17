@@ -29,6 +29,21 @@ class Instamojo{
 	// Time-out.
 	protected $timeout = 10;
 
+	public $title = null;
+	public $description = null;
+	public $currency  = null;
+	public $base_price = null;
+	public $quantity = null;
+	public $start_date = null;
+	public $end_date = null;
+	public $timezone = null;
+	public $venue = null;
+	public $redirect_url = null;
+	public $note = null;
+	public $file_upload_json = null;
+	public $cover_image_json = null;
+
+	private $currencies = array("INR", "USD");
 
 	/**
 		* Default constructor
@@ -46,6 +61,11 @@ class Instamojo{
 	*/
 	public function __destruct(){
 		if($this->curl != null) curl_close($this->curl);
+	}
+
+	protected function allowed_currency($currency){
+		if(in_array($currency, $this->currencies)) return true;
+		return false;
 	}
 
 	/**
@@ -120,7 +140,7 @@ class Instamojo{
 		}
 
 		else if($method == 'GET'){
-			# Nothing to be done here.
+			// Nothing to be done here.
 		}
 
 		else if($method == 'PUT'){
@@ -128,7 +148,7 @@ class Instamojo{
 		}
 
 		else if($method == 'DELETE'){
-
+			$options[CURLOPT_CUSTOMREQUEST] = 'DELETE';
 		}
 
 		$this->curl = curl_init();
@@ -159,29 +179,98 @@ class Instamojo{
 	}
 
 	public function listAllOffers(){
-		$response = $this->apiRequest('offer/', 'GET');
 		if(!$this->APP_TOKEN) throw new Exception("Please authenticate your application.");
+		$response = $this->apiRequest('offer/', 'GET');
 		$json = @json_decode($response['response'], true);
 		if(!$json['success']) throw new Exception("Error in listing all offers.");
 		return $json;
 	}
 
 	public function listOneOfferDetail($slug){
-		$response = $this->apiRequest("offer/$slug/", 'GET');
 		if(!$this->APP_TOKEN) throw new Exception("Please authenticate your application.");
+		$response = $this->apiRequest("offer/$slug/", 'GET');
 		$json = @json_decode($response['response'], true);
 		if(!$json['success']) throw new Exception("Error in listing offer of $slug.");
 		return $json;
 	}
 
 	public function getUploadUrl(){
-		$response = $this->apiRequest('offer/get_file_upload_url/', 'GET');
 		if(!$this->APP_TOKEN) throw new Exception("Please authenticate your application.");
+		$response = $this->apiRequest('offer/get_file_upload_url/', 'GET');
 		$json = @json_decode($response['response'], true);
 		if(!$json['success']) throw new Exception("Cannot get an URL.");
 		return $json["upload_url"];
 	}
-}
 
-$instance = new Instamojo('username', 'password', 'APP_ID');
+	public function deleteAuthToken(){
+		if(!$this->APP_TOKEN) throw new Exception("No token loaded, unable to delete.");
+		$response = $this->apiRequest("auth/$this->APP_TOKEN/", 'DELETE');
+		$json = @json_decode($response['response'], true);
+		if(!$json['success']) throw new Exception("Could not delete auth token.");
+		$this->APP_TOKEN = null;
+	}
+
+	public function archiveOffer($slug){
+		if(!$this->APP_TOKEN) throw new Exception("No token loaded, unable to archive.");
+		$response = $this->apiRequest("offer/$slug/", 'DELETE');
+		$json = @json_decode($response['response'], true);
+		if(!$json['success']) throw new Exception("Could not archive offer.");
+	}
+
+	public function setTitle($title){
+		if(strlen($title) > 200) throw new Exception("Title size not more than 200 allowed.");
+		$this->title = (string) $title;
+	}
+
+	public function setDescription($description){
+		$this->description = (string) $description;
+	}
+
+	public function setCurrency($currency){
+		if(!$this->allowed_currency($currency)) throw new Exception("Invalid currency.");
+		$this->currency = (string) $currency;
+	}
+
+	public function setBasePrice($base_price){
+		if(!(is_numeric($base_price) && (int)$base_price >= 0)) throw new Exception("The base_price should be a positive number or zero.");
+		$this->base_price = (string) $base_price;
+	}
+
+	public function setQuantity($quantity){
+		if(!(is_numeric($quantity) && (int)$quantity == $quantity && (int)$quantity >= 0))
+			throw new Exception("The quantity should be a positive number or zero.");
+		$this->quantity = (string) $quantity;
+	}
+
+	public function setStartDate($start_date){
+		$this->start_date = $start_date;
+	}
+
+	public function setEndDate($end_date){
+		$this->end_date = $end_date;
+	}
+	public function setTimeZone($timezone){
+		$this->timezone = $timezone;
+	}
+
+	public function setVenue($venue){
+		$this->venue = $venue;
+	}
+
+	public function setRedirectURL($redirect_url){
+		$this->redirect_url = $redirect_url;
+	}
+
+	public function setNote($note){
+		$this->note = $note;
+	}
+
+	public function setFileUploadJson($file_upload_json){
+		$this->file_upload_json = $file_upload_json;
+	}
+
+	public function setCoverImageJson($cover_image_json){
+		$this->cover_image_json = $cover_image_json;
+	}
+}
 ?>
