@@ -40,8 +40,10 @@ class Instamojo{
 	public $venue = null;
 	public $redirect_url = null;
 	public $note = null;
-	public $file_upload_json = null;
-	public $cover_image_json = null;
+	public $file_path = null;
+	public $cover_path = null;
+	private $file_upload_json = null;
+	private $cover_image_json = null;
 
 	private $currencies = array("INR", "USD");
 
@@ -166,6 +168,7 @@ class Instamojo{
 
 	/**
 		* Authenticate the application.
+		* @return array PHP array of the JSON response.
 	*/
 	public function apiAuth(){
 		$response = $this->apiRequest('auth/', 'POST', $data = array('username' => $this->username, 'password' => $this->password));
@@ -178,6 +181,10 @@ class Instamojo{
 		return $json;
 	}
 
+	/**
+		* List all the offers of the user.
+		* @return array PHP array of the JSON response.
+	*/
 	public function listAllOffers(){
 		if(!$this->APP_TOKEN) throw new Exception("Please authenticate your application.");
 		$response = $this->apiRequest('offer/', 'GET');
@@ -186,6 +193,11 @@ class Instamojo{
 		return $json;
 	}
 
+	/**
+		* List the complete offer details of the offer id mentioned in $slug.
+		* @param array $slug The offer id.
+		* @return array PHP array of the JSON response.
+	*/
 	public function listOneOfferDetail($slug){
 		if(!$this->APP_TOKEN) throw new Exception("Please authenticate your application.");
 		$response = $this->apiRequest("offer/$slug/", 'GET');
@@ -194,6 +206,10 @@ class Instamojo{
 		return $json;
 	}
 
+	/**
+		* Used to get an upload URL for the files to be uploaded, i.e. The cover image and the File.
+		* @return array PHP array of the JSON response.
+	*/
 	public function getUploadUrl(){
 		if(!$this->APP_TOKEN) throw new Exception("Please authenticate your application.");
 		$response = $this->apiRequest('offer/get_file_upload_url/', 'GET');
@@ -202,6 +218,9 @@ class Instamojo{
 		return $json["upload_url"];
 	}
 
+	/**
+		* Deletes the authentication toekn recieved from Instamojo.
+	*/
 	public function deleteAuthToken(){
 		if(!$this->APP_TOKEN) throw new Exception("No token loaded, unable to delete.");
 		$response = $this->apiRequest("auth/$this->APP_TOKEN/", 'DELETE');
@@ -210,6 +229,10 @@ class Instamojo{
 		$this->APP_TOKEN = null;
 	}
 
+	/**
+		* Archives(Deletes) the offer whos id is supplied.
+		* @param string $slug Id of the offer.
+	*/
 	public function archiveOffer($slug){
 		if(!$this->APP_TOKEN) throw new Exception("No token loaded, unable to archive.");
 		$response = $this->apiRequest("offer/$slug/", 'DELETE');
@@ -217,6 +240,9 @@ class Instamojo{
 		if(!$json['success']) throw new Exception("Could not archive offer.");
 	}
 
+	/**
+		* Set the title of the offer.
+	*/
 	public function setTitle($title){
 		if(strlen($title) > 200) throw new Exception("Title size not more than 200 allowed.");
 		$this->title = (string) $title;
@@ -265,12 +291,75 @@ class Instamojo{
 		$this->note = $note;
 	}
 
-	public function setFileUploadJson($file_upload_json){
-		$this->file_upload_json = $file_upload_json;
+	public function setFilePath($file_path){
+		$this->file_path = $file_path;
 	}
 
-	public function setCoverImageJson($cover_image_json){
-		$this->cover_image_json = $cover_image_json;
+	public function setCoverPath($cover_path){
+		$this->cover_path = $cover_path;
+	}
+
+	private function getFileUploadJson($file_upload_url, $file_path){
+		$file_path = realpath($file_path);
+		$file_name = basename($file_path);
+		$ch = curl_init();
+		$data = array('fileUpload' => '@'.$file_path);
+		curl_setopt($ch, CURLOPT_URL, $file_upload_url);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$uploadJson = curl_exec($ch);
+		print_r($uploadJson);
+		return $uploadJson;
+	}
+
+	private function buildDataArray(){
+		$data = array();
+		if(!$this->title) throw new Exception("title is a must for creating an offer.");
+		$data['title'] = $this->title;
+		if(!$this->description) throw new Exception("description is a must for creating an offer.");
+		$data['description'] = $this->description;
+		if(!$this->currency) throw new Exception("currency is a must for creating an offer.");
+		$data['currency'] = $this->currency;
+		if(!$this->base_price && $this->base_price != '0') throw new Exception("base_price is a must for creating an offer.");
+		$data['base_price'] = $this->base_price;
+		if($this->quantity)
+			$data['quantity'] = $this->quantity;
+		if($this->start_date)
+			$data['start_date'] = $this->start_date;
+		if($this->end_date)
+			$data['end_date'] = $this->end_date;
+		if($this->timezone) 
+			$data['timezone'] = $this->timezone;
+		if($this->venue)
+			$data['venue'] = $this->venue;
+		if($this->redirect_url)
+			$data['redirect_url'] = $this->redirect_url;
+		if($this->note)
+			$data['note'] = $this->note;
+		if(!$this->file_path) throw new Exception("file is a must for creating an offer.");
+
+		$upload_url = $this->getUploadUrl();
+		$file_upload_json = $this->getFileUploadJson($upload_url, $this->file_path);
+		$json = @json_decode($file_upload_json, true);
+		$data['file_upload_json'] = $file_upload_json;
+
+		if($this->cover_path){
+			$upload_url = $this->getUploadUrl();
+			$cover_upload_json = $this->getFileUploadJson($upload_url, $this->cover_path);
+			$json = @json_decode($cover_upload_json, true);
+			$data['cover_upload_json'] = $file_upload_json;
+		}
+		return $data;
+	}
+
+	public function createOffer(){
+		$offer_array = $this->buildDataArray();
+		$request = $this->apiRequest('offer/', 'POST', $data = $offer_array);
+		$json = @json_decode($request['response'], true);
+		if(!$json['success']) throw new Exception("Connot create offer.");
+		return $request;
 	}
 }
+
 ?>
