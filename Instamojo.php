@@ -341,14 +341,12 @@ class Instamojo{
 
 		$upload_url = $this->getUploadUrl();
 		$file_upload_json = $this->getFileUploadJson($upload_url, $this->file_path);
-		$json = @json_decode($file_upload_json, true);
 		$data['file_upload_json'] = $file_upload_json;
 
 		if($this->cover_path){
 			$upload_url = $this->getUploadUrl();
 			$cover_upload_json = $this->getFileUploadJson($upload_url, $this->cover_path);
-			$json = @json_decode($cover_upload_json, true);
-			$data['cover_upload_json'] = $file_upload_json;
+			$data['cover_upload_json'] = $cover_upload_json;
 		}
 		return $data;
 	}
@@ -362,4 +360,14 @@ class Instamojo{
 	}
 }
 
+$instance = new Instamojo('username', 'password', 'token');
+$auth = $instance->apiAuth();
+$instance->setTitle('Kolkata');
+$instance->setDescription('Fast life of people at Kolkata.');
+$instance->setCurrency('INR');
+$instance->setBasePrice('0');
+$instance->setFilePath('IMG_3240.jpg');
+$instance->setCoverPath('rsz_img_3240.jpg');
+$offer = $instance->createOffer();
+print_r($offer);
 ?>
