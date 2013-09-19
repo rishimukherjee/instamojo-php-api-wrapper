@@ -42,8 +42,6 @@ class Instamojo{
 	public $note = null;
 	public $file_path = null;
 	public $cover_path = null;
-	private $file_upload_json = null;
-	private $cover_image_json = null;
 
 	private $currencies = array("INR", "USD");
 
@@ -153,9 +151,22 @@ class Instamojo{
 			$options[CURLOPT_CUSTOMREQUEST] = 'DELETE';
 		}
 
+		else if($method == 'PATCH'){
+			$data_string = "";
+
+			foreach ($data as $key => $value) {
+				$data_string .= $key.'='.$value.'&';
+			}
+
+			$data_string = rtrim($data_string, '&');
+
+			$options[CURLOPT_POST] = count($data);
+			$options[CURLOPT_POSTFIELDS] = $data_string;
+			$options[CURLOPT_CUSTOMREQUEST] = 'PATCH';
+		}
+
 		$this->curl = curl_init();
 		curl_setopt_array($this->curl, $options);
-
 		$response = curl_exec($this->curl);
 		$headers = curl_getinfo($this->curl);
 
@@ -309,7 +320,6 @@ class Instamojo{
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		$uploadJson = curl_exec($ch);
-		print_r($uploadJson);
 		return $uploadJson;
 	}
 
@@ -346,7 +356,7 @@ class Instamojo{
 		if($this->cover_path){
 			$upload_url = $this->getUploadUrl();
 			$cover_upload_json = $this->getFileUploadJson($upload_url, $this->cover_path);
-			$data['cover_upload_json'] = $cover_upload_json;
+			$data['cover_image_json'] = $cover_upload_json;
 		}
 		return $data;
 	}
@@ -358,6 +368,14 @@ class Instamojo{
 		if(!$json['success']) throw new Exception("Connot create offer.");
 		return $request;
 	}
+
+	public function editOffer($slug){
+		$offer_array = $this->buildDataArray();
+		$request = $this->apiRequest("offer/$slug/", 'PATCH', $data = $offer_array);
+		$json = @json_decode($request['response'], true);
+		if(!$json['success']) throw new Exception("Connot edit offer.");
+		return $request;
+	}
 }
 
 $instance = new Instamojo('username', 'password', 'token');
@@ -365,9 +383,9 @@ $auth = $instance->apiAuth();
 $instance->setTitle('Kolkata');
 $instance->setDescription('Fast life of people at Kolkata.');
 $instance->setCurrency('INR');
-$instance->setBasePrice('0');
+$instance->setBasePrice('50');
 $instance->setFilePath('IMG_3240.jpg');
 $instance->setCoverPath('rsz_img_3240.jpg');
-$offer = $instance->createOffer();
+$offer = $instance->editOffer('kolkata-dc780');
 print_r($offer);
 ?>
