@@ -9,7 +9,7 @@ class Instamojo{
 	const API_URL = 'https://www.instamojo.com/api/1/';
 
 	// API version.
-	const version = '0.0';
+	const version = '0.1';
 
 	// A curl instance.
 	protected $curl;
@@ -63,7 +63,15 @@ class Instamojo{
 		if($this->curl != null) curl_close($this->curl);
 	}
 
-	protected function allowed_currency($currency){
+	/**
+		* Get the version of the API wrapper.
+		* @return string Version of the API wrapper.
+	*/
+	public function getVersion(){
+		return self::version;
+	}
+
+	private function allowed_currency($currency){
 		if(in_array($currency, $this->currencies)) return true;
 		return false;
 	}
@@ -252,64 +260,129 @@ class Instamojo{
 	}
 
 	/**
-		* Set the title of the offer.
+		* Title, keep concise since slug is auto-generated
+		* from the title [max: 200 char, required]
+		* @param string $title Title of the offer.
 	*/
 	public function setTitle($title){
 		if(strlen($title) > 200) throw new Exception("Title size not more than 200 allowed.");
 		$this->title = (string) $title;
 	}
 
+	/**
+		* Detailed description of the offer, can contain markdown.
+		* @param string $description Description of the offer.
+	*/
 	public function setDescription($description){
 		$this->description = (string) $description;
 	}
 
+	/**
+		* Currency of the offer. Can be INR or USD.
+		* @param string $currency Currency of the offer.
+	*/
 	public function setCurrency($currency){
 		if(!$this->allowed_currency($currency)) throw new Exception("Invalid currency.");
 		$this->currency = (string) $currency;
 	}
 
+	/**
+		* Price of the offer as a decimal (up to 2 decimal places)
+		* @param string $base_price Base price of the offer.
+	*/
 	public function setBasePrice($base_price){
 		if(!(is_numeric($base_price) && (int)$base_price >= 0)) throw new Exception("The base_price should be a positive number or zero.");
 		$this->base_price = (string) $base_price;
 	}
 
+	/**
+		* Keep zero for unlimited quantity, 
+		* any other positive number will limit sales/claims of the offer 
+		* and make it unavailable afterwards.
+		* @param string $quantity of the offer. 0 for unlimited.
+	*/
 	public function setQuantity($quantity){
 		if(!(is_numeric($quantity) && (int)$quantity == $quantity && (int)$quantity >= 0))
 			throw new Exception("The quantity should be a positive number or zero.");
 		$this->quantity = (string) $quantity;
 	}
 
+	/**
+		* Required for events, date-time when the event begins. 
+		* Format: YYYY-MM-DD HH:mm
+		* @param string $start_date Start date of the offer.
+	*/
 	public function setStartDate($start_date){
 		$this->start_date = $start_date;
 	}
 
+	/**
+		* Required for events, date-time when the event begins. 
+		* Format: YYYY-MM-DD HH:mm
+		* @param string $end_date End date of the offer.
+	*/
 	public function setEndDate($end_date){
 		$this->end_date = $end_date;
 	}
+
+	/**
+		* Timezone of the event. Example: Asia/Kolkata
+		* @param string $timezone Timezone of the offer.
+	*/
 	public function setTimeZone($timezone){
 		$this->timezone = $timezone;
 	}
 
+	/**
+		* Required for events, location where the event will be held.
+		* @param string $venue Venue of the offer.
+	*/
 	public function setVenue($venue){
 		$this->venue = $venue;
 	}
 
+	/**
+		* You can set this to a thank-you page on your site. 
+		* Buyers will be redirected here after successful payment.
+		* @param string $redirect_url The URL to be redirected to after a buyer downloads the digital file.
+	*/
 	public function setRedirectURL($redirect_url){
 		$this->redirect_url = $redirect_url;
 	}
 
+	/**
+		* A note to be displayed to buyer after successful 
+		* payment. This will also be sent via email and 
+		* in the receipt/ticket that is sent as attachment 
+		* to the email.
+	*/
 	public function setNote($note){
 		$this->note = $note;
 	}
 
+	/**
+		* Path to the file you want to sell.
+		* @param string $file_path Path to the file.
+	*/
 	public function setFilePath($file_path){
 		$this->file_path = $file_path;
 	}
 
+	/**
+		* Path to the cover image.
+		* @param string $cover_path Path to the cover image.
+	*/
 	public function setCoverPath($cover_path){
 		$this->cover_path = $cover_path;
 	}
 
+	/**
+		* A utility function to send POST request to the URL recieved from
+		* getUploadUrl() and upload a file.
+		* @param string $file_upload_url The URL recieved from getUploadUrl().
+		* @param string $file_path The path to the file in your computer.
+		* @return JSON The JSON recieved from the request. 
+	*/
 	private function getFileUploadJson($file_upload_url, $file_path){
 		$file_path = realpath($file_path);
 		$file_name = basename($file_path);
@@ -323,6 +396,11 @@ class Instamojo{
 		return $uploadJson;
 	}
 
+	/**
+		* Utility function to build the data array which will be used
+		* to send data for creating offer through apiRequest().
+		* @return array The array to be used later to send data about the offer to Instamojo API.
+	*/
 	private function buildDataArray(){
 		$data = array();
 		if(!$this->title) throw new Exception("title is a must for creating an offer.");
@@ -361,6 +439,10 @@ class Instamojo{
 		return $data;
 	}
 
+	/**
+		* Function to create an instamojo offer.
+		* @return JSON The response resieved from Instamojo API.
+	*/
 	public function createOffer(){
 		$offer_array = $this->buildDataArray();
 		$request = $this->apiRequest('offer/', 'POST', $data = $offer_array);
@@ -369,6 +451,11 @@ class Instamojo{
 		return $request;
 	}
 
+	/**
+		* Function to to edit an offer.
+		* @param string $slug The offer ID.
+		* @return JSON The response recieved from Instamojo API.
+	*/
 	public function editOffer($slug){
 		$offer_array = $this->buildDataArray();
 		$request = $this->apiRequest("offer/$slug/", 'PATCH', $data = $offer_array);
@@ -378,14 +465,14 @@ class Instamojo{
 	}
 }
 
-$instance = new Instamojo('username', 'password', 'token');
+$instance = new Instamojo('username', 'passweord', 'token');
 $auth = $instance->apiAuth();
 $instance->setTitle('Kolkata');
 $instance->setDescription('Fast life of people at Kolkata.');
 $instance->setCurrency('INR');
-$instance->setBasePrice('50');
+$instance->setBasePrice('100');
 $instance->setFilePath('IMG_3240.jpg');
 $instance->setCoverPath('rsz_img_3240.jpg');
-$offer = $instance->editOffer('kolkata-dc780');
+$offer = $instance->createOffer();
 print_r($offer);
 ?>
