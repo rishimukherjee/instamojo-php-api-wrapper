@@ -465,14 +465,4 @@ class Instamojo{
 	}
 }
 
-$instance = new Instamojo('username', 'passweord', 'token');
-$auth = $instance->apiAuth();
-$instance->setTitle('Kolkata');
-$instance->setDescription('Fast life of people at Kolkata.');
-$instance->setCurrency('INR');
-$instance->setBasePrice('100');
-$instance->setFilePath('IMG_3240.jpg');
-$instance->setCoverPath('rsz_img_3240.jpg');
-$offer = $instance->createOffer();
-print_r($offer);
 ?>
