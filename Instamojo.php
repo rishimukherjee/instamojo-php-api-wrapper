@@ -39,6 +39,7 @@ class Instamojo{
 	public $timezone = null;
 	public $venue = null;
 	public $redirect_url = null;
+	public $webhook_url = null;
 	public $note = null;
 	public $file_path = null;
 	public $cover_path = null;
@@ -351,6 +352,15 @@ class Instamojo{
 	}
 
 	/**
+		* You can set this to a page on your site that will accept a POST request with transaction details.
+		* Instamojo's server will attempt to ping the URL after every sucessful transaction.
+	*/
+	public function setWebhookURL($webhook_url){
+		$this->webhook_url = $webhook_url;
+	}
+
+
+	/**
 		* A note to be displayed to buyer after successful 
 		* payment. This will also be sent via email and 
 		* in the receipt/ticket that is sent as attachment 
@@ -423,6 +433,8 @@ class Instamojo{
 			$data['venue'] = $this->venue;
 		if($this->redirect_url)
 			$data['redirect_url'] = $this->redirect_url;
+		if($this->webhook_url)
+			$data['webhook_url'] = $this->webhook_url;
 		if($this->note)
 			$data['note'] = $this->note;
 		// if(!$this->file_path) throw new Exception("file is a must for creating an offer.");
