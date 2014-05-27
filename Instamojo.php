@@ -425,7 +425,7 @@ class Instamojo{
 			$data['redirect_url'] = $this->redirect_url;
 		if($this->note)
 			$data['note'] = $this->note;
-		if(!$this->file_path) throw new Exception("file is a must for creating an offer.");
+		// if(!$this->file_path) throw new Exception("file is a must for creating an offer.");
 
 		$upload_url = $this->getUploadUrl();
 		$file_upload_json = $this->getFileUploadJson($upload_url, $this->file_path);
