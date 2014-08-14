@@ -126,7 +126,7 @@ You have these functions to interact with the API:
 ### Quantity
   * `quantity` - Set to 0 for unlimited sales. If you set it to say 10, a total of 10 sales will be allowed after which the Link will be made unavailable.
 
-### Optional
+### Post Purchase Note
   * `note` - A post-purchase note, will only displayed after successful payment. Will also be included in the ticket/ receipt that is sent as attachment to the email sent to buyer. This will not be shown if the payment fails.
 
 ### Event
@@ -138,3 +138,7 @@ You have these functions to interact with the API:
 ### Redirects and Webhooks
   * `redirect_url` - This can be a Thank-You page on your website. Buyers will be redirected to this page after successful payment.
   * `webhook_url` - Set this to a URL that can accept POST requests made by Instamojo server after successful payment.
+  * `enable_pwyw` - set this to True, if you want to enable Pay What You Want. Default is False.
+  * `enable_sign` - set this to True, if you want to enable Link Signing. Default is False. For more information regarding this, and to avail this feature write to support at instamojo.com.
+
+Further documentation is available at https://www.instamojo.com/developers/
