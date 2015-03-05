@@ -68,8 +68,7 @@ class Instamojo {
         $options = array();
         $options[CURLOPT_HTTPHEADER] = $headers;
         $options[CURLOPT_RETURNTRANSFER] = true;
-        $options[CURLOPT_URL] = $request_url;
-
+        
         if($method == 'POST') {
             $options[CURLOPT_POST] = 1;
             $options[CURLOPT_POSTFIELDS] = http_build_query($data);
@@ -79,7 +78,14 @@ class Instamojo {
             $options[CURLOPT_POST] = 1;
             $options[CURLOPT_POSTFIELDS] = http_build_query($data);         
             $options[CURLOPT_CUSTOMREQUEST] = 'PATCH';
+        } else if ($method == 'GET' or $method == 'HEAD') {
+            if (!empty($data)) {
+                /* Update URL to container Query String of Paramaters */
+                $request_url .= '?' . http_build_query($data);
+            }
         }
+        // $options[CURLOPT_VERBOSE] = true;
+        $options[CURLOPT_URL] = $request_url;
 
         $this->curl = curl_init();
         $setopt = curl_setopt_array($this->curl, $options);
@@ -202,9 +208,18 @@ class Instamojo {
     /**
     * @return array list of Payment objects.
     */  
-    public function paymentsList() 
+    public function paymentsList($limit = null, $page = null) 
     {
-        return $this->api_call('GET', 'payments', array())['payments'];
+        $params = array();
+        if (!is_null($limit)) {
+            $params['limit'] = $limit;
+        }
+
+        if (!is_null($page)) {
+            $params['page'] = $page;
+        }
+
+        return $this->api_call('GET', 'payments', $params)['payments'];
     }
 
     /**
