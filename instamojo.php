@@ -18,7 +18,7 @@ class Instamojo {
     {
         $this->api_key = (string) $api_key;
         $this->auth_token = (string) $auth_token;
-        if($endpoint != null) {
+        if(!is_null($endpoint)){
             $this->endpoint = (string) $endpoint;   
         }
     }
@@ -48,7 +48,10 @@ class Instamojo {
     */
     private function build_api_call_url($path) 
     {
+
+        echo $this->endpoint . $path . '/';
         return $this->endpoint . $path . '/';
+
     }
 
     /**
