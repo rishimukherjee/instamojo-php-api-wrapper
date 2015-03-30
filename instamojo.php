@@ -18,14 +18,14 @@ class Instamojo {
     {
         $this->api_key = (string) $api_key;
         $this->auth_token = (string) $auth_token;
-        if($endpoint != null) {
+        if(!is_null($endpoint)){
             $this->endpoint = (string) $endpoint;   
         }
     }
 
     public function __destruct() 
     {
-        if($this->curl != null) {
+        if(!isnull($this->curl)) {
             curl_close($this->curl);
         }
     }
@@ -49,6 +49,7 @@ class Instamojo {
     private function build_api_call_url($path) 
     {
         return $this->endpoint . $path . '/';
+
     }
 
     /**
@@ -108,7 +109,8 @@ class Instamojo {
     */
     public function getUploadUrl()
     {
-        return $this->api_call('GET', 'links/get_file_upload_url', array())['upload_url'];
+        $result = $this->api_call('GET', 'links/get_file_upload_url', array());
+        return $result['upload_url'];
     }
 
     /**
@@ -159,8 +161,8 @@ class Instamojo {
     public function auth(array $args)
     {
         $response = $this->api_call('POST', 'auth', $args);
-        $this->auth_token = $response['auth_token']['auth_token'];
-        return $response['auth_token'];
+        $this->auth_token = $response['auth_token']['auth_token']; 
+        return $this->auth_token; 
     }
 
     /**
@@ -168,7 +170,8 @@ class Instamojo {
     */
     public function linksList() 
     {
-        return $this->api_call('GET', 'links', array())['links'];
+        $response = $this->api_call('GET', 'links', array());   
+        return $response['links'];
     }
 
     /**
@@ -176,7 +179,8 @@ class Instamojo {
     */  
     public function linkDetail($slug) 
     {
-        return $this->api_call('GET', 'links/' . $slug, array())['link'];
+        $response = $this->api_call('GET', 'links/' . $slug, array()); 
+        return $response['link'];
     }
 
     /**
@@ -185,7 +189,8 @@ class Instamojo {
     public function linkCreate(array $link) 
     {   
         $link = $this->uploadMagic($link);
-        return $this->api_call('POST', 'links', $link)['link'];
+        $response = $this->api_call('POST', 'links', $link);
+        return $response['link'];
     }
 
     /**
@@ -194,7 +199,8 @@ class Instamojo {
     public function linkEdit($slug, array $link) 
     {
         $link = $this->uploadMagic($link);
-        return $this->api_call('PATCH', 'links/' . $slug, $link)['link'];
+        $response = $this->api_call('PATCH', 'links/' . $slug, $link);
+        return $response['link'];
     }
 
     /**
@@ -202,7 +208,8 @@ class Instamojo {
     */  
     public function linkDelete($slug) 
     {
-        return $this->api_call('DELETE', 'links/' . $slug, array());
+        $response = $this->api_call('DELETE', 'links/' . $slug, array());
+        return $response;
     }
 
     /**
@@ -219,7 +226,8 @@ class Instamojo {
             $params['page'] = $page;
         }
 
-        return $this->api_call('GET', 'payments', $params)['payments'];
+        $response = $this->api_call('GET', 'payments', $params);
+        return $response['payments'];
     }
 
     /**
@@ -228,7 +236,8 @@ class Instamojo {
     */  
     public function paymentDetail($payment_id) 
     {
-        return $this->api_call('GET', 'payments/' . $payment_id, array())['payment'];
+        $response = $this->api_call('GET', 'payments/' . $payment_id, array()); 
+        return $response['payment'];
     }
 }
 ?>
