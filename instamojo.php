@@ -25,7 +25,7 @@ class Instamojo {
 
     public function __destruct() 
     {
-        if(!isnull($this->curl)) {
+        if(!is_null($this->curl)) {
             curl_close($this->curl);
         }
     }
