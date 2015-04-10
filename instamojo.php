@@ -140,7 +140,7 @@ class Instamojo {
     public function uploadMagic(array $link)
     {
         if($link['file_upload']) {
-            $file_upload_json = $this->uploadFile($link['upload_file']);
+            $file_upload_json = $this->uploadFile($link['file_upload']);
             $link['file_upload_json'] = $file_upload_json;
             unset($link['file_upload']);
         }
