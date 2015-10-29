@@ -139,12 +139,12 @@ class Instamojo {
     */
     public function uploadMagic(array $link)
     {
-        if($link['file_upload']) {
+        if(!empty($link['file_upload'])) {
             $file_upload_json = $this->uploadFile($link['file_upload']);
             $link['file_upload_json'] = $file_upload_json;
             unset($link['file_upload']);
         }
-        if($link['cover_image']) {
+        if(!empty($link['cover_image'])) {
             $cover_image_json = $this->uploadFile($link['cover_image']);
             $link['cover_image_json'] = $cover_image_json;
             unset($link['cover_image']);
