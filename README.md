@@ -180,7 +180,7 @@ This will give you JSON object containing details of the Payment Request that wa
     $api = new Instamojo('[API_KEY]', '[AUTH_TOKEN]');
 
     try {
-        $response = $api->paymentRequestStatus('4d6ee0ddc062429d860d2cac864cf07c');
+        $response = $api->paymentRequestStatus(['PAYMENT REQUEST ID']);
         print_r($response);
     }
     catch (Exception $e) {
@@ -221,8 +221,13 @@ This will give you an array containing Payment Requests created so far. Note tha
 
 For details related to supported datetime format check the documentation: https://www.instamojo.com/developers/request-a-payment-api/#toc-filtering-payment-requests
 
+## Available Request a Payment Functions
 
-## Request a Payment Parameters
+You have these functions to interact with the Request a Payment API:
+
+  * `paymentRequestCreate(array $payment_request)` Create a new Payment Request.
+  * `paymentRequestStatus($id)` Get details of Payment Request specified by its unique id.
+  * `paymentRequestsList(array $datetime_limits)` Get a list of all Payment Requests. The `$datetime_limits` argument is optional an can be used to filter Payment Requests by their creation and modification date.
 
 ## Payment Request Creation Parameters
 
