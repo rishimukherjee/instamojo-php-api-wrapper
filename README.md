@@ -191,7 +191,7 @@ This will give you JSON object containing details of the Payment Request that wa
 This will give you JSON object containing details of the Payment Request and the payments related to it.
 Key for payments is `'payments'`.
 
-Here `'4d6ee0ddc062429d860d2cac864cf07c'` is the value of `'id'` key returned by the `paymentRequestCreate()` query.
+Here `['PAYMENT REQUEST ID']` is the value of `'id'` key returned by the `paymentRequestCreate()` query.
 
 
 ### Get a list of all Payment Requests
@@ -243,4 +243,4 @@ You have these functions to interact with the Request a Payment API:
   * `send_sms`: Set this to True if you want to send SMS to the payer if phone is specified. If phone is not specified then an error is raised. (default value: False)
   * `redirect_url`: set this to a thank-you page on your site. Buyers will be redirected here after successful payment.
   * `webhook`: set this to a URL that can accept POST requests made by Instamojo server after successful payment.
-  * `allow_repeated_payments`: To disallow multiple payments on a Payment Request pass False for this field. (default value: True)
+  * `allow_repeated_payments`: To disallow multiple successful payments on a Payment Request pass `false` for this field. If this is set to `false` then the link is not accessible publicly after first successful payment, though you can still access it using API(default value: `true`).
