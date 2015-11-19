@@ -189,7 +189,7 @@ This will give you JSON object containing details of the Payment Request that wa
     ?>
 
 This will give you JSON object containing details of the Payment Request and the payments related to it.
-Key for payments is `payments`.
+Key for payments is `'payments'`.
 
 Here `'4d6ee0ddc062429d860d2cac864cf07c'` is the value of `'id'` key returned by the `paymentRequestCreate()` query.
 
@@ -210,18 +210,16 @@ Here `'4d6ee0ddc062429d860d2cac864cf07c'` is the value of `'id'` key returned by
     }
     ?>
 
-This will give you an array containing Payment Requests creates so far. Note that the payments related to individual Payment
-Request are returned with this query.
+This will give you an array containing Payment Requests created so far. Note that the payments related to individual Payment Request are not returned with this query.
 
-`paymentRequestsList()` also accepts an optional array containing keys `max_created_at` , `min_created_at`, `'min_modified_at'`
-and `'max_modified_at'` for filtering the list of Payment Requests. Note that it is not required to pass all of the keys.
+`paymentRequestsList()` also accepts an optional array containing keys `'max_created_at'` , `'min_created_at'`, `'min_modified_at'` and `'max_modified_at'` for filtering the list of Payment Requests. Note that it is not required to pass all of the keys.
 
     $response = $api->paymentRequestsList(array(
         "max_created_at" => "2015-11-19T10:12:19Z",
         "min_created_at" => "2015-10-29T12:51:36Z"
         ));
 
-Details related to supported datetime format check the related documentation: https://www.instamojo.com/developers/request-a-payment-api/#toc-filtering-payment-requests
+For details related to supported datetime format check the documentation: https://www.instamojo.com/developers/request-a-payment-api/#toc-filtering-payment-requests
 
 
 ## Request a Payment Parameters
@@ -240,4 +238,4 @@ Details related to supported datetime format check the related documentation: ht
   * `send_sms`: Set this to True if you want to send SMS to the payer if phone is specified. If phone is not specified then an error is raised. (default value: False)
   * `redirect_url`: set this to a thank-you page on your site. Buyers will be redirected here after successful payment.
   * `webhook`: set this to a URL that can accept POST requests made by Instamojo server after successful payment.
-  allow_repeated_payments: To disallow multiple payments on a Payment Request pass False for this field. (default value: True)
+  * `allow_repeated_payments`: To disallow multiple payments on a Payment Request pass False for this field. (default value: True)
