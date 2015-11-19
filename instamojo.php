@@ -46,9 +46,12 @@ class Instamojo {
     * @param string $path
     * @return string adds the path to endpoint with.
     */
-    private function build_api_call_url($path) 
+    private function build_api_call_url($path)
     {
-        return $this->endpoint . $path . '/';
+        if (strpos($path, '/?') === false and strpos($path, '?') === false) {
+            return $this->endpoint . $path . '/';
+        }
+        return $this->endpoint . $path;
 
     }
 
@@ -249,5 +252,51 @@ class Instamojo {
         $response = $this->api_call('GET', 'payments/' . $payment_id, array()); 
         return $response['payment'];
     }
+
+
+    /////   Request a Payment  /////
+
+    /**
+    * @param array single PaymentRequest object.
+    * @return array single PaymentRequest object.
+    */
+    public function paymentRequestCreate(array $payment_request) 
+    {
+        $response = $this->api_call('POST', 'payment-requests', $payment_request); 
+        return $response['payment_request'];
+    }
+
+    /**
+    * @param string id as provided by paymentRequestCreate, paymentRequestsList, webhook or redirect.
+    * @return array single PaymentRequest object.
+    */
+    public function paymentRequestStatus($id) 
+    {
+        $response = $this->api_call('GET', 'payment-requests/' . $id, array()); 
+        return $response['payment_request'];
+    }
+
+    /**
+    * @param array datetime_limits containing datetime data with keys 'max_created_at', 'min_created_at',
+    * 'min_modified_at' and 'max_modified_at' in ISO 8601 format(optional).
+    * @return array containing list of PaymentRequest objects.
+    * For more information on the allowed date formats check the
+    * docs: https://www.instamojo.com/developers/request-a-payment-api/#toc-filtering-payment-requests
+    */
+    public function paymentRequestsList($datetime_limits=null) 
+    {
+        $endpoint = 'payment-requests';
+
+        if(!empty($datetime_limits)){
+            $query_string = http_build_query($datetime_limits);
+
+            if(!empty($query_string)){
+                $endpoint .= '/?' . $query_string;
+            }
+        }
+        $response = $this->api_call('GET', $endpoint, array()); 
+        return $response['payment_requests'];
+    }
+
 }
 ?>
