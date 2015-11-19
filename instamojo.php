@@ -97,6 +97,16 @@ class Instamojo {
         $error_message = curl_error($this->curl);
         $response_obj = json_decode($response, true);
 
+        if($error_number != 0){
+            if($error_number == 60){
+                throw new Exception("Something went wrong. cURL raised an error with number: $error_number and message: $error_message. " .
+                                    "Please check http://stackoverflow.com/a/21114601/846892 for a fix." . PHP_EOL);
+            }
+            else{
+                throw new Exception("Something went wrong. cURL raised an error with number: $error_number and message: $error_message." . PHP_EOL);
+            }
+        }
+
         if($response_obj['success'] == false) {
             $message = json_encode($response_obj['message']);
             throw new Exception($message . PHP_EOL);
