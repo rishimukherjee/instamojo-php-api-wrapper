@@ -150,13 +150,11 @@ class Instamojo {
         // PHP 5.5 introduced a CurlFile object that deprecates the old @filename syntax
         // See: https://wiki.php.net/rfc/curl-file-upload
         if (function_exists('curl_file_create')) {
-            echo "HERE!";
             return curl_file_create($file_path, $content_type, $file_name);
         }
 
         // Use the old style if using an older version of PHP
         $value = "@{$file_path};filename=$file_name";
-        echo $value;
         if ($content_type) {
             $value .= ';type=' . $content_type;
         }
@@ -221,6 +219,9 @@ class Instamojo {
     */  
     public function linkCreate(array $link) 
     {   
+        if(empty($link['currency'])){
+            $link['currency'] = 'INR';
+        }
         $link = $this->uploadMagic($link);
         $response = $this->api_call('POST', 'links', $link);
         return $response['link'];
