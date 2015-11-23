@@ -239,8 +239,8 @@ You have these functions to interact with the Request a Payment API:
   * `buyer_name`: Name of the payer. (max-characters: 100)
   * `email`: Email of the payer. (max-characters: 75)
   * `phone`: Phone number of the payer.
-  * `send_email`: Set this to True if you want to send email to the payer if email is specified. If email is not specified then an error is raised. (* default value`: False)
-  * `send_sms`: Set this to True if you want to send SMS to the payer if phone is specified. If phone is not specified then an error is raised. (default value: False)
+  * `send_email`: Set this to `true` if you want to send email to the payer if email is specified. If email is not specified then an error is raised. (default value: `false`)
+  * `send_sms`: Set this to `true` if you want to send SMS to the payer if phone is specified. If phone is not specified then an error is raised. (default value: `false`)
   * `redirect_url`: set this to a thank-you page on your site. Buyers will be redirected here after successful payment.
   * `webhook`: set this to a URL that can accept POST requests made by Instamojo server after successful payment.
   * `allow_repeated_payments`: To disallow multiple successful payments on a Payment Request pass `false` for this field. If this is set to `false` then the link is not accessible publicly after first successful payment, though you can still access it using API(default value: `true`).
