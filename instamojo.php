@@ -136,12 +136,32 @@ class Instamojo {
         $file_path = realpath($file_path);
         $file_name = basename($file_path);
         $ch = curl_init();
-        $data = array('fileUpload'=>'@'.$file_path);
+        $data = array('fileUpload' => $this->getCurlValue($file_path, $file_name));
         curl_setopt($ch, CURLOPT_URL, $upload_url);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         return curl_exec($ch);
+    }
+
+    public function getCurlValue($file_path, $file_name, $content_type='')
+    {
+        // http://stackoverflow.com/a/21048702/846892
+        // PHP 5.5 introduced a CurlFile object that deprecates the old @filename syntax
+        // See: https://wiki.php.net/rfc/curl-file-upload
+        if (function_exists('curl_file_create')) {
+            echo "HERE!";
+            return curl_file_create($file_path, $content_type, $file_name);
+        }
+
+        // Use the old style if using an older version of PHP
+        $value = "@{$file_path};filename=$file_name";
+        echo $value;
+        if ($content_type) {
+            $value .= ';type=' . $content_type;
+        }
+
+        return $value;
     }
 
     /**
