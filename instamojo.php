@@ -319,5 +319,37 @@ class Instamojo {
         return $response['payment_requests'];
     }
 
+
+    /////   Refunds  /////
+
+    /**
+    * @param array single Refund object.
+    * @return array single Refund object.
+    */
+    public function refundCreate(array $refund) 
+    {
+        $response = $this->api_call('POST', 'refunds', $refund); 
+        return $response['refund'];
+    }
+
+    /**
+    * @param string id as provided by refundCreate or refundsList.
+    * @return array single Refund object.
+    */
+    public function refundDetail($id) 
+    {
+        $response = $this->api_call('GET', 'refunds/' . $id, array()); 
+        return $response['refund'];
+    }
+
+    /**
+    * @return array containing list of Refund objects.
+    */
+    public function refundsList() 
+    {
+        $response = $this->api_call('GET', 'refunds', array()); 
+        return $response['refunds'];
+    }
+
 }
 ?>
