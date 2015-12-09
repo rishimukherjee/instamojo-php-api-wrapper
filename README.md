@@ -17,7 +17,6 @@ Assists you to programmatically create, edit and delete Links on Instamojo in PH
             'title'=>'Hello API',
             'description'=>'Create a new Link easily',
             'base_price'=>100,
-            'currency'=>'INR',
             'cover_image'=>'/path/to/photo.jpg'
             ));
         print_r($response);
@@ -117,7 +116,6 @@ You have these functions to interact with the API:
   * `title` - Title of the Link, be concise.
   * `description` - Describe what your customers will get, you can add terms and conditions and any other relevant information here. Markdown is supported, popular media URLs like Youtube, Flickr are auto-embedded.
   * `base_price` - Price of the Link. This may be 0, if you want to offer it for free. 
-  * `currency` - Currency options are `INR` and `USD`. Note that you need to have a Bank Account in USA to accept USD currencies. 
 
 ### File and Cover Image
   * `file_upload` - Full path to the file you want to sell. This file will be available only after successful payment.
