@@ -192,6 +192,30 @@ Key for payments is `'payments'`.
 Here `['PAYMENT REQUEST ID']` is the value of `'id'` key returned by the `paymentRequestCreate()` query.
 
 
+### Get the status of a Payment related to a Payment Request
+
+    <?php
+    require "instamojo.php";
+
+    $api = new Instamojo('[API_KEY]', '[AUTH_TOKEN]');
+
+    try {
+        $response = $api->paymentRequestPaymentStatus(['PAYMENT REQUEST ID'], ['PAYMENT ID']);
+        print_r($response['purpose']);  // print purpose of payment request
+        print_r($response['payment']['status']);  // print status of payment
+    }
+    catch (Exception $e) {
+        print('Error: ' . $e->getMessage());
+    }
+    ?>
+
+This will give you JSON object containing details of the Payment Request and the payments related to it.
+Key for payments is `'payments'`.
+
+Here `['PAYMENT REQUEST ID']` is the value of `'id'` key returned by the `paymentRequestCreate()` query and
+['PAYMENT ID'] is the Payment ID received with redirection URL or webhook.
+
+
 ### Get a list of all Payment Requests
 
     <?php
