@@ -150,13 +150,11 @@ class Instamojo {
         // PHP 5.5 introduced a CurlFile object that deprecates the old @filename syntax
         // See: https://wiki.php.net/rfc/curl-file-upload
         if (function_exists('curl_file_create')) {
-            echo "HERE!";
             return curl_file_create($file_path, $content_type, $file_name);
         }
 
         // Use the old style if using an older version of PHP
         $value = "@{$file_path};filename=$file_name";
-        echo $value;
         if ($content_type) {
             $value .= ';type=' . $content_type;
         }
@@ -221,6 +219,9 @@ class Instamojo {
     */  
     public function linkCreate(array $link) 
     {   
+        if(empty($link['currency'])){
+            $link['currency'] = 'INR';
+        }
         $link = $this->uploadMagic($link);
         $response = $this->api_call('POST', 'links', $link);
         return $response['link'];
@@ -316,6 +317,38 @@ class Instamojo {
         }
         $response = $this->api_call('GET', $endpoint, array()); 
         return $response['payment_requests'];
+    }
+
+
+    /////   Refunds  /////
+
+    /**
+    * @param array single Refund object.
+    * @return array single Refund object.
+    */
+    public function refundCreate(array $refund) 
+    {
+        $response = $this->api_call('POST', 'refunds', $refund); 
+        return $response['refund'];
+    }
+
+    /**
+    * @param string id as provided by refundCreate or refundsList.
+    * @return array single Refund object.
+    */
+    public function refundDetail($id) 
+    {
+        $response = $this->api_call('GET', 'refunds/' . $id, array()); 
+        return $response['refund'];
+    }
+
+    /**
+    * @return array containing list of Refund objects.
+    */
+    public function refundsList() 
+    {
+        $response = $this->api_call('GET', 'refunds', array()); 
+        return $response['refunds'];
     }
 
 }
