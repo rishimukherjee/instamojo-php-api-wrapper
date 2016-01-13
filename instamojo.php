@@ -298,6 +298,18 @@ class Instamojo {
     }
 
     /**
+    * @param string id as provided by paymentRequestCreate, paymentRequestsList, webhook or redirect.
+    * @param string payment_id as received with the redirection URL or webhook.
+    * @return array single PaymentRequest object.
+    */
+    public function paymentRequestPaymentStatus($id, $payment_id) 
+    {
+        $response = $this->api_call('GET', 'payment-requests/' . $id . '/' . $payment_id, array()); 
+        return $response['payment_request'];
+    }
+
+
+    /**
     * @param array datetime_limits containing datetime data with keys 'max_created_at', 'min_created_at',
     * 'min_modified_at' and 'max_modified_at' in ISO 8601 format(optional).
     * @return array containing list of PaymentRequest objects.
