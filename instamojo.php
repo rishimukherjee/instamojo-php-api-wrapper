@@ -1,5 +1,7 @@
 <?php
 
+namespace Instamojo;
+
 class Instamojo {
     const version = '1.1';
 
