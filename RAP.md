@@ -5,7 +5,7 @@
     <?php
     require "instamojo.php";
 
-    $api = new Instamojo('[API_KEY]', '[AUTH_TOKEN]');
+    $api = new Instamojo\Instamojo('[API_KEY]', '[AUTH_TOKEN]');
 
     try {
         $response = $api->paymentRequestCreate(array(
@@ -30,7 +30,7 @@ This will give you JSON object containing details of the Payment Request that wa
     <?php
     require "instamojo.php";
 
-    $api = new Instamojo('[API_KEY]', '[AUTH_TOKEN]');
+    $api = new Instamojo\Instamojo('[API_KEY]', '[AUTH_TOKEN]');
 
     try {
         $response = $api->paymentRequestStatus(['PAYMENT REQUEST ID']);
@@ -52,7 +52,7 @@ Here `['PAYMENT REQUEST ID']` is the value of `'id'` key returned by the `paymen
     <?php
     require "instamojo.php";
 
-    $api = new Instamojo('[API_KEY]', '[AUTH_TOKEN]');
+    $api = new Instamojo\Instamojo('[API_KEY]', '[AUTH_TOKEN]');
 
     try {
         $response = $api->paymentRequestPaymentStatus(['PAYMENT REQUEST ID'], ['PAYMENT ID']);
@@ -76,7 +76,7 @@ Here `['PAYMENT REQUEST ID']` is the value of `'id'` key returned by the `paymen
     <?php
     require "instamojo.php";
 
-    $api = new Instamojo('[API_KEY]', '[AUTH_TOKEN]');
+    $api = new Instamojo\Instamojo('[API_KEY]', '[AUTH_TOKEN]');
 
     try {
         $response = $api->paymentRequestsList();

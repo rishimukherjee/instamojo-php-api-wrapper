@@ -10,7 +10,7 @@ Assists you to programmatically create, edit and delete Links on Instamojo in PH
     <?php
     require "instamojo.php";
 
-    $api = new Instamojo('[API_KEY]', '[AUTH_TOKEN]');
+    $api = new Instamojo\Instamojo('[API_KEY]', '[AUTH_TOKEN]');
 
     try {
         $response = $api->linkCreate(array(
@@ -33,7 +33,7 @@ This will give you JSON object containing details of the Link that was just crea
     <?php
     require "instamojo.php";
 
-    $api = new Instamojo('[API_KEY]', '[AUTH_TOKEN]');
+    $api = new Instamojo\Instamojo('[API_KEY]', '[AUTH_TOKEN]');
 
     try {
         $response = $api->linkEdit(
@@ -53,7 +53,7 @@ This will give you JSON object containing details of the Link that was just crea
     <?php
     require "instamojo.php";
 
-    $api = new Instamojo('[API_KEY]', '[AUTH_TOKEN]');
+    $api = new Instamojo\Instamojo('[API_KEY]', '[AUTH_TOKEN]');
 
     try {
         $response = $api->linksList();
@@ -69,7 +69,7 @@ This will give you JSON object containing details of the Link that was just crea
     <?php
     require "instamojo.php";
 
-    $api = new Instamojo('[API_KEY]', '[AUTH_TOKEN]');
+    $api = new Instamojo\Instamojo('[API_KEY]', '[AUTH_TOKEN]');
 
     try {
         $response = $api->paymentsList();
@@ -85,7 +85,7 @@ This will give you JSON object containing details of the Link that was just crea
     <?php
     require "instamojo.php";
 
-    $api = new Instamojo('[API_KEY]', '[AUTH_TOKEN]');
+    $api = new Instamojo\Instamojo('[API_KEY]', '[AUTH_TOKEN]');
 
     try {
         $response = $api->paymentDetail('[PAYMENT ID]');
