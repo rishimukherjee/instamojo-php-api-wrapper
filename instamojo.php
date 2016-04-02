@@ -1,12 +1,15 @@
 <?php
+
 namespace Instamojo;
 
 class Instamojo {
     const version = '1.1';
+
     protected $curl;
     protected $endpoint = 'https://www.instamojo.com/api/1.1/';
     protected $api_key = null;
     protected $auth_token = null;
+
     /**
     * @param string $api_key
     * @param string $auth_token is available on the d
@@ -21,12 +24,14 @@ class Instamojo {
             $this->endpoint = (string) $endpoint;   
         }
     }
+
     public function __destruct() 
     {
         if(!is_null($this->curl)) {
             curl_close($this->curl);
         }
     }
+
     /**
     * @return array headers with Authentication tokens added 
     */
@@ -38,6 +43,7 @@ class Instamojo {
         }
         return $headers;        
     }
+
     /**
     * @param string $path
     * @return string adds the path to endpoint with.
@@ -48,7 +54,9 @@ class Instamojo {
             return $this->endpoint . $path . '/';
         }
         return $this->endpoint . $path;
+
     }
+
     /**
     * @param string $method ('GET', 'POST', 'DELETE', 'PATCH')
     * @param string $path whichever API path you want to target.
@@ -62,6 +70,7 @@ class Instamojo {
         $data = (array) $data;
         $headers = $this->build_curl_headers();
         $request_url = $this-> build_api_call_url($path);
+
         $options = array();
         $options[CURLOPT_HTTPHEADER] = $headers;
         $options[CURLOPT_RETURNTRANSFER] = true;
@@ -83,13 +92,16 @@ class Instamojo {
         }
         // $options[CURLOPT_VERBOSE] = true;
         $options[CURLOPT_URL] = $request_url;
+
         $this->curl = curl_init();
         $setopt = curl_setopt_array($this->curl, $options);
         $response = curl_exec($this->curl);
         $headers = curl_getinfo($this->curl);
+
         $error_number = curl_errno($this->curl);
         $error_message = curl_error($this->curl);
         $response_obj = json_decode($response, true);
+
         if($error_number != 0){
             if($error_number == 60){
                 throw new \Exception("Something went wrong. cURL raised an error with number: $error_number and message: $error_message. " .
@@ -99,12 +111,14 @@ class Instamojo {
                 throw new \Exception("Something went wrong. cURL raised an error with number: $error_number and message: $error_message." . PHP_EOL);
             }
         }
+
         if($response_obj['success'] == false) {
             $message = json_encode($response_obj['message']);
             throw new \Exception($message . PHP_EOL);
         }
         return $response_obj;
     }
+
     /**
     * @return string URL to upload file or cover image asynchronously
     */
@@ -113,6 +127,7 @@ class Instamojo {
         $result = $this->api_call('GET', 'links/get_file_upload_url', array());
         return $result['upload_url'];
     }
+
     /**
     * @param string $file_path
     * @return string JSON returned when the file upload is complete.
@@ -130,6 +145,7 @@ class Instamojo {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         return curl_exec($ch);
     }
+
     public function getCurlValue($file_path, $file_name, $content_type='')
     {
         // http://stackoverflow.com/a/21048702/846892
@@ -138,13 +154,16 @@ class Instamojo {
         if (function_exists('curl_file_create')) {
             return curl_file_create($file_path, $content_type, $file_name);
         }
+
         // Use the old style if using an older version of PHP
         $value = "@{$file_path};filename=$file_name";
         if ($content_type) {
             $value .= ';type=' . $content_type;
         }
+
         return $value;
     }
+
     /**
     * Uploads any file or cover image mentioned in $link and 
     * updates it with the json required by the API.
@@ -165,6 +184,7 @@ class Instamojo {
         }
         return $link;        
     }
+
     /**
     * Authenticate using username and password of a user.
     * Automatically updates the auth_token value.
@@ -177,6 +197,7 @@ class Instamojo {
         $this->auth_token = $response['auth_token']['auth_token']; 
         return $this->auth_token; 
     }
+
     /**
     * @return array list of Link objects.
     */
@@ -185,6 +206,7 @@ class Instamojo {
         $response = $this->api_call('GET', 'links', array());   
         return $response['links'];
     }
+
     /**
     * @return array single Link object.
     */  
@@ -193,6 +215,7 @@ class Instamojo {
         $response = $this->api_call('GET', 'links/' . $slug, array()); 
         return $response['link'];
     }
+
     /**
     * @return array single Link object.
     */  
@@ -205,6 +228,7 @@ class Instamojo {
         $response = $this->api_call('POST', 'links', $link);
         return $response['link'];
     }
+
     /**
     * @return array single Link object.
     */  
@@ -214,6 +238,7 @@ class Instamojo {
         $response = $this->api_call('PATCH', 'links/' . $slug, $link);
         return $response['link'];
     }
+
     /**
     * @return array single Link object.
     */  
@@ -222,6 +247,7 @@ class Instamojo {
         $response = $this->api_call('DELETE', 'links/' . $slug, array());
         return $response;
     }
+
     /**
     * @return array list of Payment objects.
     */  
@@ -231,12 +257,15 @@ class Instamojo {
         if (!is_null($limit)) {
             $params['limit'] = $limit;
         }
+
         if (!is_null($page)) {
             $params['page'] = $page;
         }
+
         $response = $this->api_call('GET', 'payments', $params);
         return $response['payments'];
     }
+
     /**
     * @param string payment_id as provided by paymentsList() or Instamojo's webhook or redirect functions.
     * @return array single Payment object.
@@ -246,7 +275,10 @@ class Instamojo {
         $response = $this->api_call('GET', 'payments/' . $payment_id, array()); 
         return $response['payment'];
     }
+
+
     /////   Request a Payment  /////
+
     /**
     * @param array single PaymentRequest object.
     * @return array single PaymentRequest object.
@@ -256,6 +288,7 @@ class Instamojo {
         $response = $this->api_call('POST', 'payment-requests', $payment_request); 
         return $response['payment_request'];
     }
+
     /**
     * @param string id as provided by paymentRequestCreate, paymentRequestsList, webhook or redirect.
     * @return array single PaymentRequest object.
@@ -265,6 +298,7 @@ class Instamojo {
         $response = $this->api_call('GET', 'payment-requests/' . $id, array()); 
         return $response['payment_request'];
     }
+
     /**
     * @param string id as provided by paymentRequestCreate, paymentRequestsList, webhook or redirect.
     * @param string payment_id as received with the redirection URL or webhook.
@@ -275,6 +309,8 @@ class Instamojo {
         $response = $this->api_call('GET', 'payment-requests/' . $id . '/' . $payment_id, array()); 
         return $response['payment_request'];
     }
+
+
     /**
     * @param array datetime_limits containing datetime data with keys 'max_created_at', 'min_created_at',
     * 'min_modified_at' and 'max_modified_at' in ISO 8601 format(optional).
@@ -285,8 +321,10 @@ class Instamojo {
     public function paymentRequestsList($datetime_limits=null) 
     {
         $endpoint = 'payment-requests';
+
         if(!empty($datetime_limits)){
             $query_string = http_build_query($datetime_limits);
+
             if(!empty($query_string)){
                 $endpoint .= '/?' . $query_string;
             }
@@ -294,7 +332,10 @@ class Instamojo {
         $response = $this->api_call('GET', $endpoint, array()); 
         return $response['payment_requests'];
     }
+
+
     /////   Refunds  /////
+
     /**
     * @param array single Refund object.
     * @return array single Refund object.
@@ -304,6 +345,7 @@ class Instamojo {
         $response = $this->api_call('POST', 'refunds', $refund); 
         return $response['refund'];
     }
+
     /**
     * @param string id as provided by refundCreate or refundsList.
     * @return array single Refund object.
@@ -313,6 +355,7 @@ class Instamojo {
         $response = $this->api_call('GET', 'refunds/' . $id, array()); 
         return $response['refund'];
     }
+
     /**
     * @return array containing list of Refund objects.
     */
@@ -321,5 +364,6 @@ class Instamojo {
         $response = $this->api_call('GET', 'refunds', array()); 
         return $response['refunds'];
     }
+
 }
 ?>
