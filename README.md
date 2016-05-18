@@ -4,10 +4,7 @@ Assists you to programmatically create, edit and delete Links on Instamojo in PH
 
 **Note**: If you're using this wrapper with our sandbox environment `https://test.instamojo.com/` then you should pass `'https://test.instamojo.com/api/1.1/'` as third argument to the `Instamojo` class while initializing it.
 
-    $api = new Instamojo\Instamojo(
-        API_KEY,
-        AUTH_TOKEN,
-        'https://test.instamojo.com/api/1.1/');
+    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN, 'https://test.instamojo.com/api/1.1/');
 
 
 ## Usage
