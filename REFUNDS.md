@@ -5,7 +5,7 @@
     <?php
     require "instamojo.php";
 
-    $api = new Instamojo\Instamojo('API_KEY', 'AUTH_TOKEN');
+    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
 
     try {
         $response = $api->refundCreate(array(
@@ -28,7 +28,7 @@ This will give you JSON object containing details of the Refund that was just cr
     <?php
     require "instamojo.php";
 
-    $api = new Instamojo\Instamojo('API_KEY', 'AUTH_TOKEN');
+    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
 
     try {
         $response = $api->refundDetail('[REFUND ID]');
@@ -49,7 +49,7 @@ Here `['REFUND ID']` is the value of `'id'` key returned by the `refundCreate()`
     <?php
     require "instamojo.php";
 
-    $api = new Instamojo\Instamojo('API_KEY', 'AUTH_TOKEN');
+    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
 
     try {
         $response = $api->refundsList();

@@ -5,8 +5,8 @@ Assists you to programmatically create, edit and delete Links on Instamojo in PH
 **Note**: If you're using this wrapper with our sandbox environment `https://test.instamojo.com/` then you should pass `'https://test.instamojo.com/api/1.1/'` as third argument to the `Instamojo` class while initializing it.
 
     $api = new Instamojo\Instamojo(
-        'API_KEY',
-        'AUTH_TOKEN',
+        API_KEY,
+        AUTH_TOKEN,
         'https://test.instamojo.com/api/1.1/');
 
 
@@ -17,7 +17,7 @@ Assists you to programmatically create, edit and delete Links on Instamojo in PH
     <?php
     require "instamojo.php";
 
-    $api = new Instamojo\Instamojo('API_KEY', 'AUTH_TOKEN');
+    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
 
     try {
         $response = $api->linkCreate(array(
@@ -40,7 +40,7 @@ This will give you JSON object containing details of the Link that was just crea
     <?php
     require "instamojo.php";
 
-    $api = new Instamojo\Instamojo('API_KEY', 'AUTH_TOKEN');
+    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
 
     try {
         $response = $api->linkEdit(
@@ -60,7 +60,7 @@ This will give you JSON object containing details of the Link that was just crea
     <?php
     require "instamojo.php";
 
-    $api = new Instamojo\Instamojo('API_KEY', 'AUTH_TOKEN');
+    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
 
     try {
         $response = $api->linksList();
@@ -76,7 +76,7 @@ This will give you JSON object containing details of the Link that was just crea
     <?php
     require "instamojo.php";
 
-    $api = new Instamojo\Instamojo('API_KEY', 'AUTH_TOKEN');
+    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
 
     try {
         $response = $api->paymentsList();
@@ -92,7 +92,7 @@ This will give you JSON object containing details of the Link that was just crea
     <?php
     require "instamojo.php";
 
-    $api = new Instamojo\Instamojo('API_KEY', 'AUTH_TOKEN');
+    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
 
     try {
         $response = $api->paymentDetail('[PAYMENT ID]');
