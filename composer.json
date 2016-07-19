@@ -1,5 +1,5 @@
 {
-    "name": "ashwch/instamojo-php",
+    "name": "instamojo/instamojo-php",
     "type": "library",
     "description": "This is composer wrapper for instamojo-php",
     "license": "MIT",
