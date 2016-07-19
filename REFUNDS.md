@@ -5,7 +5,7 @@
 
 ```php
 $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN, 'https://test.instamojo.com/api/1.1/');
-```php
+```
 
 
 ## Installing via [Composer](https://getcomposer.org/)
