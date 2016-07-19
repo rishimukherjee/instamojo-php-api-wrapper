@@ -4,6 +4,8 @@
     "description": "This is composer wrapper for instamojo-php",
     "license": "MIT",
     "homepage": "https://github.com/instamojo/instamojo-php/",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "keywords": ["instamojo", "php", "api", "wrapper"],
     "authors": [
         {
