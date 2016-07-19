@@ -3,7 +3,9 @@
 **Note**: If you're using this wrapper with our sandbox environment `https://test.instamojo.com/` then you should pass `'https://test.instamojo.com/api/1.1/'` as third argument to the `Instamojo` class while initializing it. API key and Auth token for the same can be obtained from https://test.instamojo.com/developers/ (Details: [Test Or Sandbox Account](https://instamojo.zendesk.com/hc/en-us/articles/208485675-Test-or-Sandbox-Account)).
 
 
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN, 'https://test.instamojo.com/api/1.1/');
+```php
+$api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN, 'https://test.instamojo.com/api/1.1/');
+```php
 
 
 ## Installing via [Composer](https://getcomposer.org/)
@@ -16,69 +18,80 @@ $ php composer.phar require instamojo/instamojo-php
 
 ## Usage
 
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
-
+```php
+$api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
+```
 
 ### Create a Link
 
-    try {
-        $response = $api->linkCreate(array(
-            'title'=>'Hello API',
-            'description'=>'Create a new Link easily',
-            'base_price'=>100,
-            'cover_image'=>'/path/to/photo.jpg'
-            ));
-        print_r($response);
-    }
-    catch (Exception $e) {
-        print('Error: ' . $e->getMessage());
-    }
+```php
+try {
+    $response = $api->linkCreate(array(
+        'title'=>'Hello API',
+        'description'=>'Create a new Link easily',
+        'base_price'=>100,
+        'cover_image'=>'/path/to/photo.jpg'
+        ));
+    print_r($response);
+}
+catch (Exception $e) {
+    print('Error: ' . $e->getMessage());
+}
+```
 
 This will give you JSON object containing details of the Link that was just created.
 
 ### Edit a Link
 
-    try {
-        $response = $api->linkEdit(
-            'hello-api', // You must specify the slug of the Link
-            array(
-            'title'=>'A New Title',
-            ));
-        print_r($response);
-    }
-    catch (Exception $e) {
-        print('Error: ' . $e->getMessage());
-    }
+```php
+try {
+    $response = $api->linkEdit(
+        'hello-api', // You must specify the slug of the Link
+        array(
+        'title'=>'A New Title',
+        ));
+    print_r($response);
+}
+catch (Exception $e) {
+    print('Error: ' . $e->getMessage());
+}
+```
 
 ### List all Links
 
-    try {
-        $response = $api->linksList();
-        print_r($response);
-    }
-    catch (Exception $e) {
-        print('Error: ' . $e->getMessage());
-    }
+```php
+try {
+    $response = $api->linksList();
+    print_r($response);
+}
+catch (Exception $e) {
+    print('Error: ' . $e->getMessage());
+}
+```
 
 ### List all Payments
 
-    try {
-        $response = $api->paymentsList();
-        print_r($response);
-    }
-    catch (Exception $e) {
-        print('Error: ' . $e->getMessage());
-    }
+```php
+try {
+    $response = $api->paymentsList();
+    print_r($response);
+}
+catch (Exception $e) {
+    print('Error: ' . $e->getMessage());
+}
+```
 
 ### Get Details of a Payment using Payment ID
 
-    try {
-        $response = $api->paymentDetail('[PAYMENT ID]');
-        print_r($response);
-    }
-    catch (Exception $e) {
-        print('Error: ' . $e->getMessage());
-    }
+```php
+try {
+    $response = $api->paymentDetail('[PAYMENT ID]');
+    print_r($response);
+}
+catch (Exception $e) {
+    print('Error: ' . $e->getMessage());
+}
+```
 
 ## Available Functions
 
