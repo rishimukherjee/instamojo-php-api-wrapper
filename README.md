@@ -5,57 +5,56 @@ Assists you to programmatically create, edit and delete Links on Instamojo in PH
 **Note**: If you're using this wrapper with our sandbox environment `https://test.instamojo.com/` then you should pass `'https://test.instamojo.com/api/1.1/'` as third argument to the `Instamojo` class while initializing it. API key and Auth token for the same can be obtained from https://test.instamojo.com/developers/ (Details: [Test Or Sandbox Account](https://instamojo.zendesk.com/hc/en-us/articles/208485675-Test-or-Sandbox-Account)).
 
 
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN, 'https://test.instamojo.com/api/1.1/');
-
+```php
+$api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN, 'https://test.instamojo.com/api/1.1/');
+```
 
 ## Installing via [Composer](https://getcomposer.org/)
 ```bash
 $ php composer.phar require instamojo/instamojo-php
 ```
 
+**Note**: If you're not using Composer then directly include the `src/instamojo.php` file in your project.
+
 
 ## Usage
 
+```php
+$api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
+```
+
 ### Create a new Payment Request
 
-    <?php
-    require "instamojo.php";
-
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
-
-    try {
-        $response = $api->paymentRequestCreate(array(
-            "purpose" => "FIFA 16",
-            "amount" => "3499",
-            "send_email" => true,
-            "email" => "foo@example.com",
-            "redirect_url" => "http://www.example.com/handle_redirect.php"
-            ));
-        print_r($response);
-    }
-    catch (Exception $e) {
-        print('Error: ' . $e->getMessage());
-    }
-    ?>
+```php
+try {
+    $response = $api->paymentRequestCreate(array(
+        "purpose" => "FIFA 16",
+        "amount" => "3499",
+        "send_email" => true,
+        "email" => "foo@example.com",
+        "redirect_url" => "http://www.example.com/handle_redirect.php"
+        ));
+    print_r($response);
+}
+catch (Exception $e) {
+    print('Error: ' . $e->getMessage());
+}
+```
 
 This will give you JSON object containing details of the Payment Request that was just created.
 
 
 ### Get the status or details of a Payment Request
 
-    <?php
-    require "instamojo.php";
-
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
-
-    try {
-        $response = $api->paymentRequestStatus(['PAYMENT REQUEST ID']);
-        print_r($response);
-    }
-    catch (Exception $e) {
-        print('Error: ' . $e->getMessage());
-    }
-    ?>
+```php
+try {
+    $response = $api->paymentRequestStatus(['PAYMENT REQUEST ID']);
+    print_r($response);
+}
+catch (Exception $e) {
+    print('Error: ' . $e->getMessage());
+}
+```
 
 This will give you JSON object containing details of the Payment Request and the payments related to it.
 Key for payments is `'payments'`.
@@ -65,52 +64,47 @@ Here `['PAYMENT REQUEST ID']` is the value of `'id'` key returned by the `paymen
 
 ### Get the status of a Payment related to a Payment Request
 
-    <?php
-    require "instamojo.php";
-
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
-
-    try {
-        $response = $api->paymentRequestPaymentStatus(['PAYMENT REQUEST ID'], ['PAYMENT ID']);
-        print_r($response['purpose']);  // print purpose of payment request
-        print_r($response['payment']['status']);  // print status of payment
-    }
-    catch (Exception $e) {
-        print('Error: ' . $e->getMessage());
-    }
-    ?>
+```php
+try {
+    $response = $api->paymentRequestPaymentStatus(['PAYMENT REQUEST ID'], ['PAYMENT ID']);
+    print_r($response['purpose']);  // print purpose of payment request
+    print_r($response['payment']['status']);  // print status of payment
+}
+catch (Exception $e) {
+    print('Error: ' . $e->getMessage());
+}
+```
 
 This will give you JSON object containing details of the Payment Request and the payments related to it.
 Key for payments is `'payments'`.
 
 Here `['PAYMENT REQUEST ID']` is the value of `'id'` key returned by the `paymentRequestCreate()` query and
-['PAYMENT ID'] is the Payment ID received with redirection URL or webhook.
+`['PAYMENT ID']` is the Payment ID received with redirection URL or webhook.
 
 
 ### Get a list of all Payment Requests
 
-    <?php
-    require "instamojo.php";
+```php
+try {
+    $response = $api->paymentRequestsList();
+    print_r($response);
+}
+catch (Exception $e) {
+    print('Error: ' . $e->getMessage());
+}
+```
 
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
-
-    try {
-        $response = $api->paymentRequestsList();
-        print_r($response);
-    }
-    catch (Exception $e) {
-        print('Error: ' . $e->getMessage());
-    }
-    ?>
 
 This will give you an array containing Payment Requests created so far. Note that the payments related to individual Payment Request are not returned with this query.
 
 `paymentRequestsList()` also accepts an optional array containing keys `'max_created_at'` , `'min_created_at'`, `'min_modified_at'` and `'max_modified_at'` for filtering the list of Payment Requests. Note that it is not required to pass all of the keys.
 
-    $response = $api->paymentRequestsList(array(
-        "max_created_at" => "2015-11-19T10:12:19Z",
-        "min_created_at" => "2015-10-29T12:51:36Z"
-        ));
+```php
+$response = $api->paymentRequestsList(array(
+    "max_created_at" => "2015-11-19T10:12:19Z",
+    "min_created_at" => "2015-10-29T12:51:36Z"
+    ));
+```
 
 For details related to supported datetime format check the documentation: https://www.instamojo.com/developers/request-a-payment-api/#toc-filtering-payment-requests
 
@@ -139,4 +133,4 @@ You have these functions to interact with the Request a Payment API:
   * `allow_repeated_payments`: To disallow multiple successful payments on a Payment Request pass `false` for this field. If this is set to `false` then the link is not accessible publicly after first successful payment, though you can still access it using API(default value: `true`).
 
 
-Further documentation is available at instamojo.com/developers/request-a-payment-api/
+Further documentation is available at https://docs.instamojo.com/v1.1/docs

@@ -3,100 +3,95 @@
 **Note**: If you're using this wrapper with our sandbox environment `https://test.instamojo.com/` then you should pass `'https://test.instamojo.com/api/1.1/'` as third argument to the `Instamojo` class while initializing it. API key and Auth token for the same can be obtained from https://test.instamojo.com/developers/ (Details: [Test Or Sandbox Account](https://instamojo.zendesk.com/hc/en-us/articles/208485675-Test-or-Sandbox-Account)).
 
 
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN, 'https://test.instamojo.com/api/1.1/');
+```php
+$api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN, 'https://test.instamojo.com/api/1.1/');
+```
 
+
+## Installing via [Composer](https://getcomposer.org/)
+```bash
+$ php composer.phar require instamojo/instamojo-php
+```
+
+**Note**: If you're not using Composer then directly include the `src/instamojo.php` file in your project.
+
+
+## Usage
+
+```php
+$api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
+```
 
 ### Create a Link
 
-    <?php
-    require "instamojo.php";
-
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
-
-    try {
-        $response = $api->linkCreate(array(
-            'title'=>'Hello API',
-            'description'=>'Create a new Link easily',
-            'base_price'=>100,
-            'cover_image'=>'/path/to/photo.jpg'
-            ));
-        print_r($response);
-    }
-    catch (Exception $e) {
-        print('Error: ' . $e->getMessage());
-    }
-    ?>
+```php
+try {
+    $response = $api->linkCreate(array(
+        'title'=>'Hello API',
+        'description'=>'Create a new Link easily',
+        'base_price'=>100,
+        'cover_image'=>'/path/to/photo.jpg'
+        ));
+    print_r($response);
+}
+catch (Exception $e) {
+    print('Error: ' . $e->getMessage());
+}
+```
 
 This will give you JSON object containing details of the Link that was just created.
 
 ### Edit a Link
 
-    <?php
-    require "instamojo.php";
-
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
-
-    try {
-        $response = $api->linkEdit(
-            'hello-api', // You must specify the slug of the Link
-            array(
-            'title'=>'A New Title',
-            ));
-        print_r($response);
-    }
-    catch (Exception $e) {
-        print('Error: ' . $e->getMessage());
-    }
-    ?>
+```php
+try {
+    $response = $api->linkEdit(
+        'hello-api', // You must specify the slug of the Link
+        array(
+        'title'=>'A New Title',
+        ));
+    print_r($response);
+}
+catch (Exception $e) {
+    print('Error: ' . $e->getMessage());
+}
+```
 
 ### List all Links
 
-    <?php
-    require "instamojo.php";
-
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
-
-    try {
-        $response = $api->linksList();
-        print_r($response);
-    }
-    catch (Exception $e) {
-        print('Error: ' . $e->getMessage());
-    }
-    ?>
+```php
+try {
+    $response = $api->linksList();
+    print_r($response);
+}
+catch (Exception $e) {
+    print('Error: ' . $e->getMessage());
+}
+```
 
 ### List all Payments
 
-    <?php
-    require "instamojo.php";
-
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
-
-    try {
-        $response = $api->paymentsList();
-        print_r($response);
-    }
-    catch (Exception $e) {
-        print('Error: ' . $e->getMessage());
-    }
-    ?>
+```php
+try {
+    $response = $api->paymentsList();
+    print_r($response);
+}
+catch (Exception $e) {
+    print('Error: ' . $e->getMessage());
+}
+```
 
 ### Get Details of a Payment using Payment ID
 
-    <?php
-    require "instamojo.php";
-
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
-
-    try {
-        $response = $api->paymentDetail('[PAYMENT ID]');
-        print_r($response);
-    }
-    catch (Exception $e) {
-        print('Error: ' . $e->getMessage());
-    }
-    ?>
-
+```php
+try {
+    $response = $api->paymentDetail('[PAYMENT ID]');
+    print_r($response);
+}
+catch (Exception $e) {
+    print('Error: ' . $e->getMessage());
+}
+```
 
 ## Available Functions
 

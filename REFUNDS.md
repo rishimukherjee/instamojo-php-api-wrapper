@@ -3,47 +3,55 @@
 **Note**: If you're using this wrapper with our sandbox environment `https://test.instamojo.com/` then you should pass `'https://test.instamojo.com/api/1.1/'` as third argument to the `Instamojo` class while initializing it. API key and Auth token for the same can be obtained from https://test.instamojo.com/developers/ (Details: [Test Or Sandbox Account](https://instamojo.zendesk.com/hc/en-us/articles/208485675-Test-or-Sandbox-Account)).
 
 
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN, 'https://test.instamojo.com/api/1.1/');
+```php
+$api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN, 'https://test.instamojo.com/api/1.1/');
+```
 
+
+## Installing via [Composer](https://getcomposer.org/)
+```bash
+$ php composer.phar require instamojo/instamojo-php
+```
+
+**Note**: If you're not using Composer then directly include the `src/instamojo.php` file in your project.
+
+
+## Usage
+
+```php
+$api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
+```
 
 ### Create a new Refund
 
-    <?php
-    require "instamojo.php";
-
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
-
-    try {
-        $response = $api->refundCreate(array(
-            'payment_id'=>'MOJO5c04000J30502939',
-            'type'=>'QFL',
-            'body'=>'Customer is not satified.'
-            ));
-        print_r($response);
-    }
-    catch (Exception $e) {
-        print('Error: ' . $e->getMessage());
-    }
-    ?>
+```php
+try {
+    $response = $api->refundCreate(array(
+        'payment_id'=>'MOJO5c04000J30502939',
+        'type'=>'QFL',
+        'body'=>'Customer is not satified.'
+        ));
+    print_r($response);
+}
+catch (Exception $e) {
+    print('Error: ' . $e->getMessage());
+}
+```
 
 This will give you JSON object containing details of the Refund that was just created.
 
 
 ### Get the details of a Refund
 
-    <?php
-    require "instamojo.php";
-
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
-
-    try {
-        $response = $api->refundDetail('[REFUND ID]');
-        print_r($response);
-    }
-    catch (Exception $e) {
-        print('Error: ' . $e->getMessage());
-    }
-    ?>
+```php
+try {
+    $response = $api->refundDetail('[REFUND ID]');
+    print_r($response);
+}
+catch (Exception $e) {
+    print('Error: ' . $e->getMessage());
+}
+```
 
 This will give you JSON object containing details of the Refund.
 
@@ -52,19 +60,15 @@ Here `['REFUND ID']` is the value of `'id'` key returned by the `refundCreate()`
 
 ### Get a list of all Refunds
 
-    <?php
-    require "instamojo.php";
-
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
-
-    try {
-        $response = $api->refundsList();
-        print_r($response);
-    }
-    catch (Exception $e) {
-        print('Error: ' . $e->getMessage());
-    }
-    ?>
+```php
+try {
+    $response = $api->refundsList();
+    print_r($response);
+}
+catch (Exception $e) {
+    print('Error: ' . $e->getMessage());
+}
+```
 
 This will give you an array containing Refunds created so far.
 
@@ -90,4 +94,4 @@ You have these functions to interact with the Refund API:
             this field is not provided then the total transaction amount is going to
             be used.
 
-Further documentation is available at https://www.instamojo.com/developers/rest/#toc-refunds
+Further documentation is available at https://docs.instamojo.com/v1.1/docs
