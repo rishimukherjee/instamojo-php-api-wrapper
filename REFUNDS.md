@@ -94,4 +94,4 @@ You have these functions to interact with the Refund API:
             this field is not provided then the total transaction amount is going to
             be used.
 
-Further documentation is available at https://www.instamojo.com/developers/rest/#toc-refunds
+Further documentation is available at https://docs.instamojo.com/v1.1/docs

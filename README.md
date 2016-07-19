@@ -79,7 +79,7 @@ This will give you JSON object containing details of the Payment Request and the
 Key for payments is `'payments'`.
 
 Here `['PAYMENT REQUEST ID']` is the value of `'id'` key returned by the `paymentRequestCreate()` query and
-['PAYMENT ID'] is the Payment ID received with redirection URL or webhook.
+`['PAYMENT ID']` is the Payment ID received with redirection URL or webhook.
 
 
 ### Get a list of all Payment Requests
@@ -133,4 +133,4 @@ You have these functions to interact with the Request a Payment API:
   * `allow_repeated_payments`: To disallow multiple successful payments on a Payment Request pass `false` for this field. If this is set to `false` then the link is not accessible publicly after first successful payment, though you can still access it using API(default value: `true`).
 
 
-Further documentation is available at instamojo.com/developers/request-a-payment-api/
+Further documentation is available at https://docs.instamojo.com/v1.1/docs
