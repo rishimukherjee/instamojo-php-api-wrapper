@@ -6,12 +6,20 @@
     $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN, 'https://test.instamojo.com/api/1.1/');
 
 
-### Create a new Refund
+## Installing via [Composer](https://getcomposer.org/)
+```bash
+$ php composer.phar require instamojo/instamojo-php
+```
 
-    <?php
-    require "instamojo.php";
+**Note**: If you're not using Composer then directly include the `src/instamojo.php` file in your project.
+
+
+## Usage
 
     $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
+
+
+### Create a new Refund
 
     try {
         $response = $api->refundCreate(array(
@@ -24,15 +32,11 @@
     catch (Exception $e) {
         print('Error: ' . $e->getMessage());
     }
-    ?>
 
 This will give you JSON object containing details of the Refund that was just created.
 
 
 ### Get the details of a Refund
-
-    <?php
-    require "instamojo.php";
 
     $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
 
@@ -43,7 +47,6 @@ This will give you JSON object containing details of the Refund that was just cr
     catch (Exception $e) {
         print('Error: ' . $e->getMessage());
     }
-    ?>
 
 This will give you JSON object containing details of the Refund.
 
@@ -51,9 +54,6 @@ Here `['REFUND ID']` is the value of `'id'` key returned by the `refundCreate()`
 
 
 ### Get a list of all Refunds
-
-    <?php
-    require "instamojo.php";
 
     $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
 
@@ -64,7 +64,6 @@ Here `['REFUND ID']` is the value of `'id'` key returned by the `refundCreate()`
     catch (Exception $e) {
         print('Error: ' . $e->getMessage());
     }
-    ?>
 
 This will give you an array containing Refunds created so far.
 

@@ -13,15 +13,15 @@ Assists you to programmatically create, edit and delete Links on Instamojo in PH
 $ php composer.phar require instamojo/instamojo-php
 ```
 
+**Note**: If you're not using Composer then directly include the `src/instamojo.php` file in your project.
+
 
 ## Usage
 
-### Create a new Payment Request
-
-    <?php
-    require "instamojo.php";
-
     $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
+
+
+### Create a new Payment Request
 
     try {
         $response = $api->paymentRequestCreate(array(
@@ -36,17 +36,11 @@ $ php composer.phar require instamojo/instamojo-php
     catch (Exception $e) {
         print('Error: ' . $e->getMessage());
     }
-    ?>
 
 This will give you JSON object containing details of the Payment Request that was just created.
 
 
 ### Get the status or details of a Payment Request
-
-    <?php
-    require "instamojo.php";
-
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
 
     try {
         $response = $api->paymentRequestStatus(['PAYMENT REQUEST ID']);
@@ -55,7 +49,7 @@ This will give you JSON object containing details of the Payment Request that wa
     catch (Exception $e) {
         print('Error: ' . $e->getMessage());
     }
-    ?>
+
 
 This will give you JSON object containing details of the Payment Request and the payments related to it.
 Key for payments is `'payments'`.
@@ -65,11 +59,6 @@ Here `['PAYMENT REQUEST ID']` is the value of `'id'` key returned by the `paymen
 
 ### Get the status of a Payment related to a Payment Request
 
-    <?php
-    require "instamojo.php";
-
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
-
     try {
         $response = $api->paymentRequestPaymentStatus(['PAYMENT REQUEST ID'], ['PAYMENT ID']);
         print_r($response['purpose']);  // print purpose of payment request
@@ -78,7 +67,6 @@ Here `['PAYMENT REQUEST ID']` is the value of `'id'` key returned by the `paymen
     catch (Exception $e) {
         print('Error: ' . $e->getMessage());
     }
-    ?>
 
 This will give you JSON object containing details of the Payment Request and the payments related to it.
 Key for payments is `'payments'`.
@@ -89,11 +77,6 @@ Here `['PAYMENT REQUEST ID']` is the value of `'id'` key returned by the `paymen
 
 ### Get a list of all Payment Requests
 
-    <?php
-    require "instamojo.php";
-
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
-
     try {
         $response = $api->paymentRequestsList();
         print_r($response);
@@ -101,7 +84,7 @@ Here `['PAYMENT REQUEST ID']` is the value of `'id'` key returned by the `paymen
     catch (Exception $e) {
         print('Error: ' . $e->getMessage());
     }
-    ?>
+
 
 This will give you an array containing Payment Requests created so far. Note that the payments related to individual Payment Request are not returned with this query.
 

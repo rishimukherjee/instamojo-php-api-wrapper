@@ -6,12 +6,20 @@
     $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN, 'https://test.instamojo.com/api/1.1/');
 
 
-### Create a Link
+## Installing via [Composer](https://getcomposer.org/)
+```bash
+$ php composer.phar require instamojo/instamojo-php
+```
 
-    <?php
-    require "instamojo.php";
+**Note**: If you're not using Composer then directly include the `src/instamojo.php` file in your project.
+
+
+## Usage
 
     $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
+
+
+### Create a Link
 
     try {
         $response = $api->linkCreate(array(
@@ -25,16 +33,10 @@
     catch (Exception $e) {
         print('Error: ' . $e->getMessage());
     }
-    ?>
 
 This will give you JSON object containing details of the Link that was just created.
 
 ### Edit a Link
-
-    <?php
-    require "instamojo.php";
-
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
 
     try {
         $response = $api->linkEdit(
@@ -47,14 +49,8 @@ This will give you JSON object containing details of the Link that was just crea
     catch (Exception $e) {
         print('Error: ' . $e->getMessage());
     }
-    ?>
 
 ### List all Links
-
-    <?php
-    require "instamojo.php";
-
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
 
     try {
         $response = $api->linksList();
@@ -63,14 +59,8 @@ This will give you JSON object containing details of the Link that was just crea
     catch (Exception $e) {
         print('Error: ' . $e->getMessage());
     }
-    ?>
 
 ### List all Payments
-
-    <?php
-    require "instamojo.php";
-
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
 
     try {
         $response = $api->paymentsList();
@@ -79,14 +69,8 @@ This will give you JSON object containing details of the Link that was just crea
     catch (Exception $e) {
         print('Error: ' . $e->getMessage());
     }
-    ?>
 
 ### Get Details of a Payment using Payment ID
-
-    <?php
-    require "instamojo.php";
-
-    $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
 
     try {
         $response = $api->paymentDetail('[PAYMENT ID]');
@@ -95,8 +79,6 @@ This will give you JSON object containing details of the Link that was just crea
     catch (Exception $e) {
         print('Error: ' . $e->getMessage());
     }
-    ?>
-
 
 ## Available Functions
 
