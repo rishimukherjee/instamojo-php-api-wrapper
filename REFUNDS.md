@@ -13,7 +13,7 @@ $api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN, 'https://test.instamojo.com/
 $ php composer.phar require instamojo/instamojo-php
 ```
 
-**Note**: If you're not using Composer then directly include the `src/instamojo.php` file in your project.
+**Note**: If you're not using Composer then directly include the contents of `src` directory in your project.
 
 
 ## Usage

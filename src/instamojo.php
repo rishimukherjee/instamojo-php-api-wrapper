@@ -92,6 +92,8 @@ class Instamojo {
         }
         // $options[CURLOPT_VERBOSE] = true;
         $options[CURLOPT_URL] = $request_url;
+        $options[CURLOPT_SSL_VERIFYPEER] = true;
+        $options[CURLOPT_CAINFO] = dirname(__FILE__) . '/cacert.pem';
 
         $this->curl = curl_init();
         $setopt = curl_setopt_array($this->curl, $options);
