@@ -1,4 +1,4 @@
-# Instamojo PHP API
+# Instamojo PHP API [![Latest Stable Version](https://poser.pugx.org/instamojo/instamojo-php/v/stable)](https://packagist.org/packages/instamojo/instamojo-php) [![License](https://poser.pugx.org/instamojo/instamojo-php/license)](https://opensource.org/licenses/MIT)
 
 Assists you to programmatically create, edit and delete Links on Instamojo in PHP.
 
