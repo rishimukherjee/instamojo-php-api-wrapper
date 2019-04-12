@@ -203,9 +203,18 @@ class Instamojo {
     /**
     * @return array list of Link objects.
     */
-    public function linksList() 
+    public function linksList($limit = null, $page = null) 
     {
-        $response = $this->api_call('GET', 'links', array());   
+        $params = array();
+        if (!is_null($limit)) {
+            $params['limit'] = $limit;
+        }
+
+        if (!is_null($page)) {
+            $params['page'] = $page;
+        }
+
+        $response = $this->api_call('GET', 'links', $params);   
         return $response['links'];
     }
 
@@ -335,6 +344,21 @@ class Instamojo {
         return $response['payment_requests'];
     }
 
+    public function paginatedPaymentRequestsList($limit = null, $page = null) 
+    {
+        $params = array();
+        if (!is_null($limit)) {
+            $params['limit'] = $limit;
+        }
+
+        if (!is_null($page)) {
+            $params['page'] = $page;
+        }
+    
+        $response = $this->api_call('GET', 'payment-requests', $params); 
+        return $response['payment_requests'];
+    }
+
 
     /////   Refunds  /////
 
@@ -361,9 +385,18 @@ class Instamojo {
     /**
     * @return array containing list of Refund objects.
     */
-    public function refundsList() 
+    public function refundsList($limit = null, $page = null) 
     {
-        $response = $this->api_call('GET', 'refunds', array()); 
+        $params = array();
+        if (!is_null($limit)) {
+            $params['limit'] = $limit;
+        }
+
+        if (!is_null($page)) {
+            $params['page'] = $page;
+        }
+    
+        $response = $this->api_call('GET', 'refunds', $params); 
         return $response['refunds'];
     }
 
