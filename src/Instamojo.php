@@ -330,19 +330,19 @@ class Instamojo {
         $endpoint = 'payment-requests';
 
         $params = array();
-        if (!is_null($limit)) {
+        if (!is_null($max_created_at)) {
             $params['max_created_at'] = $max_created_at;
         }
 
-        if (!is_null($page)) {
+        if (!is_null($min_created_at)) {
             $params['min_created_at'] = $min_created_at;
         }
 
-        if (!is_null($limit)) {
+        if (!is_null($min_modified_at)) {
             $params['min_modified_at'] = $min_modified_at;
         }
 
-        if (!is_null($page)) {
+        if (!is_null($$max_modified_at)) {
             $params['max_modified_at'] = $max_modified_at;
         }
 
