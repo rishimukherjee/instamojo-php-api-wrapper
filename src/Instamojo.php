@@ -57,6 +57,20 @@ class Instamojo {
 
     }
 
+    private function getParamsArray( $limit , $page )
+    {
+        $params = array();
+        if (!is_null($limit)) {
+            $params['limit'] = $limit;
+        }
+
+        if (!is_null($page)) {
+            $params['page'] = $page;
+        }
+
+        return $params;
+    }
+
     /**
     * @param string $method ('GET', 'POST', 'DELETE', 'PATCH')
     * @param string $path whichever API path you want to target.
@@ -203,9 +217,9 @@ class Instamojo {
     /**
     * @return array list of Link objects.
     */
-    public function linksList() 
+    public function linksList($limit, $path) 
     {
-        $response = $this->api_call('GET', 'links', array());   
+        $response = $this->api_call('GET', 'links', $this->getParamsArray($limit , $path) );   
         return $response['links'];
     }
 
@@ -255,16 +269,7 @@ class Instamojo {
     */  
     public function paymentsList($limit = null, $page = null) 
     {
-        $params = array();
-        if (!is_null($limit)) {
-            $params['limit'] = $limit;
-        }
-
-        if (!is_null($page)) {
-            $params['page'] = $page;
-        }
-
-        $response = $this->api_call('GET', 'payments', $params);
+        $response = $this->api_call('GET', 'payments', $this->getParamsArray($limit , $page));
         return $response['payments'];
     }
 
@@ -320,18 +325,28 @@ class Instamojo {
     * For more information on the allowed date formats check the
     * docs: https://www.instamojo.com/developers/request-a-payment-api/#toc-filtering-payment-requests
     */
-    public function paymentRequestsList($datetime_limits=null) 
+    public function paymentRequestsList( $limit = null , $page = null , $max_created_at = null , $min_created_at = null , $max_modified_at = null , $min_modified_at = null ) 
     {
         $endpoint = 'payment-requests';
 
-        if(!empty($datetime_limits)){
-            $query_string = http_build_query($datetime_limits);
-
-            if(!empty($query_string)){
-                $endpoint .= '/?' . $query_string;
-            }
+        $params = array();
+        if (!is_null($max_created_at)) {
+            $params['max_created_at'] = $max_created_at;
         }
-        $response = $this->api_call('GET', $endpoint, array()); 
+
+        if (!is_null($min_created_at)) {
+            $params['min_created_at'] = $min_created_at;
+        }
+
+        if (!is_null($min_modified_at)) {
+            $params['min_modified_at'] = $min_modified_at;
+        }
+
+        if (!is_null($$max_modified_at)) {
+            $params['max_modified_at'] = $max_modified_at;
+        }
+
+        $response = $this->api_call('GET', 'payment-requests', array_merge($params , $this->getParamsArray($limit , $page)));
         return $response['payment_requests'];
     }
 
@@ -361,9 +376,9 @@ class Instamojo {
     /**
     * @return array containing list of Refund objects.
     */
-    public function refundsList() 
+    public function refundsList($limit, $path) 
     {
-        $response = $this->api_call('GET', 'refunds', array()); 
+        $response = $this->api_call('GET', 'refunds', $this->getParamsArray($limit, $path)); 
         return $response['refunds'];
     }
 
