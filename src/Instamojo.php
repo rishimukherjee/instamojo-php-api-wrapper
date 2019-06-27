@@ -3,384 +3,347 @@
 namespace Instamojo;
 
 class Instamojo {
-    const version = '1.1';
+    // Constants
+    const API_VERSION         = '2';
+    const VALID_TYPES         = ['app', 'user', 'refresh'];
+    const TEST_BASE_URL       = 'https://test.instamojo.com/';
+    const PRODUCTION_BASE_URL = 'https://api.instamojo.com/';
+    
+    const URIS = [
+        "auth"     => "oauth2/token/",
+        "payments" => "v".self::API_VERSION."/payments/"
+    ];
 
-    protected $curl;
-    protected $endpoint = 'https://www.instamojo.com/api/1.1/';
-    protected $api_key = null;
-    protected $auth_token = null;
+    // Static Variables
 
     /**
-    * @param string $api_key
-    * @param string $auth_token is available on the d
-    * @param string $endpoint can be set if you are working on an alternative server.
-    * @return array AuthToken object.
-    */
-    public function __construct($api_key, $auth_token=null, $endpoint=null) 
+     * @property string
+     * 
+     */
+    private static $apiVersion;
+
+    /**
+     * @property string
+     * 
+     */
+    private static $authType;
+
+    /**
+     * @property string
+     * 
+     */
+    private static $baseUrl;
+
+    /**
+     * @property string
+     * 
+     */
+    private static $clientId;
+
+    /**
+     * @property string
+     * 
+     */
+    private static $clientSecret;
+
+    /**
+     * @property string
+     * 
+     */
+    private static $username;
+
+    /**
+     * @property string
+     * 
+     */
+    private static $password;
+
+    /**
+     * @property string
+     * 
+     */
+    private static $accessToken;
+
+    /**
+     * @property string
+     * 
+     */
+    private static $refreshToken;
+
+    /**
+     * @property string
+     * 
+     */
+    private static $scope;
+
+    /**
+     * @property Instamojo
+     * 
+     */
+    private static $thisObj;
+
+    /**
+     * @return string
+     * 
+     */
+    public function getAuthType()
     {
-        $this->api_key = (string) $api_key;
-        $this->auth_token = (string) $auth_token;
-        if(!is_null($endpoint)){
-            $this->endpoint = (string) $endpoint;   
+        return self::$authType;
+    }
+
+    /**
+     * @return string
+     * 
+     */
+    public function getClientId()
+    {
+        return self::$clientId;
+    }
+
+    /**
+     * @return string
+     * 
+     */
+    public function getClientSecret()
+    {
+        return self::$clientSecret;
+    }
+
+    /**
+     * @return string
+     * 
+     */
+    public function getAccessToken()
+    {
+        return self::$accessToken;
+    }
+
+    /**
+     * @return string
+     * 
+     */
+    public function getRefreshToken()
+    {
+        return self::$refreshToken;
+    }
+
+    /**
+     * @return string
+     * 
+     */
+    public function getBaseUrl()
+    {
+        return self::$baseUrl;
+    }
+
+    /**
+     * @return string
+     * 
+     */
+    public function getScope()
+    {
+        return self::$scope;
+    }
+
+    /**
+     * @return string
+     * 
+     */
+    public function __toString()
+    {
+        return sprintf("Instamojo {\nauth_type=%s, \nclient_id=%s, \nclient_secret=%s, \nbase_url=%s, \naccess_token=%s \n}", $this->getAuthType(), $this->getClientId(), $this->getClientSecret(), $this->getBaseUrl(), $this->getAccessToken());
+    }
+
+    /**
+     * Initializes the Instamojo environment with default values 
+     * and returns a singleton object of Instamojo class.
+     * 
+     * @param $type 
+     * @param $params
+     * @param $test
+     * 
+     * @return Instamojo
+     */
+    static function init($type='app', $params, $test=false)
+    {
+        if (self::$thisObj != null) {
+            return self::$thisObj;
+        } else {
+            self::validateTypeParams($type, $params);
+
+            self::$authType     = $type;
+            self::$clientId     = $params['client_id'];
+            self::$clientSecret = $params['client_secret'];
+            self::$username     = isset($params['username']) ? $params['username'] : '';
+            self::$password     = isset($params['password']) ? $params['password'] : '';
+            self::$baseUrl      = Instamojo::PRODUCTION_BASE_URL;
+
+            if ($test) {
+                self::$baseUrl = Instamojo::TEST_BASE_URL;
+            }
+
+            self::$thisObj = new Instamojo();
+
+            $auth_response = self::$thisObj->auth();
+
+            self::$accessToken  = $auth_response['access_token'];
+            self::$refreshToken = isset($auth_response['refresh_token']) ? $auth_response['refresh_token'] : '';
+            self::$scope        = isset($auth_response['scope']) ? $auth_response['scope'] : '';
+
+            return self::$thisObj;
         }
     }
 
-    public function __destruct() 
+    /**
+     * Validates params for Instamojo initialization
+     * 
+     * @param $type
+     * @param $params
+     * 
+     * @return null
+     * 
+     * @throws Exception
+     * 
+     */
+    private static function validateTypeParams($type, $params)
     {
-        if(!is_null($this->curl)) {
-            curl_close($this->curl);
+        if (!in_array(strtolower($type), Instamojo::VALID_TYPES)) {
+            throw new \Exception('Invalid type');
+        }
+
+        if (empty($params['client_id'])) {
+            throw new \Exception('Client Id is missing');
+        }
+
+        if (empty($params['client_secret'])) {
+            throw new \Exception('Client Secret is missing');
+        }
+
+        if (strtolower($type) == 'user') {
+            if (empty($params['username'])) {
+                throw new \Exception('Username is missing');
+            }
+
+            if (empty($params['password'])) {
+                throw new \Exception('Password is missing');
+            }
         }
     }
 
-    /**
-    * @return array headers with Authentication tokens added 
-    */
-    private function build_curl_headers() 
+    public function withBaseUrl($baseUrl) 
     {
-        $headers = array("X-Api-key: $this->api_key");
-        if($this->auth_token) {
-            $headers[] = "X-Auth-Token: $this->auth_token";
+        self::$baseUrl = $baseUrl;
+        return $this;
+    }
+
+    /**
+     * Build headers for api request
+     * 
+     * @return array
+     */
+    private function build_headers($auth=false) 
+    {
+        $headers = [];
+
+        if(!$auth && empty(Instamojo::$accessToken)) {
+            throw new \Exception('Access token not available');
         }
+
+        $headers[] = "Authorization: Bearer ".Instamojo::$accessToken;
+
         return $headers;        
     }
 
     /**
-    * @param string $path
-    * @return string adds the path to endpoint with.
-    */
-    private function build_api_call_url($path)
+     * Build url for api request
+     * 
+     * @param $key
+     * 
+     * @return string
+     */
+    private function build_api_url($key)
     {
-        if (strpos($path, '/?') === false and strpos($path, '?') === false) {
-            return $this->endpoint . $path . '/';
-        }
-        return $this->endpoint . $path;
-
-    }
-
-    private function getParamsArray( $limit , $page )
-    {
-        $params = array();
-        if (!is_null($limit)) {
-            $params['limit'] = $limit;
-        }
-
-        if (!is_null($page)) {
-            $params['page'] = $page;
-        }
-
-        return $params;
+        $uri = Instamojo::URIS[$key];
+        return self::$baseUrl . '/' . $uri;
     }
 
     /**
-    * @param string $method ('GET', 'POST', 'DELETE', 'PATCH')
-    * @param string $path whichever API path you want to target.
-    * @param array $data contains the POST data to be sent to the API.
-    * @return array decoded json returned by API.
-    */
-    private function api_call($method, $path, array $data=null) 
+     * Requests api data
+     * 
+     * @param $method
+     * @param $path
+     * @param $data
+     * 
+     * @return array
+     * 
+     */
+    private function request_api_data($method, $path, $data)
     {
-        $path = (string) $path;
-        $method = (string) $method;
-        $data = (array) $data;
-        $headers = $this->build_curl_headers();
-        $request_url = $this-> build_api_call_url($path);
+        $url     = $this->build_api_url($path);
+        $headers = $this->build_headers($path == 'auth');
 
-        $options = array();
-        $options[CURLOPT_HTTPHEADER] = $headers;
-        $options[CURLOPT_RETURNTRANSFER] = true;
-        
-        if($method == 'POST') {
-            $options[CURLOPT_POST] = 1;
-            $options[CURLOPT_POSTFIELDS] = http_build_query($data);
-        } else if($method == 'DELETE') {
-            $options[CURLOPT_CUSTOMREQUEST] = 'DELETE';
-        } else if($method == 'PATCH') {
-            $options[CURLOPT_POST] = 1;
-            $options[CURLOPT_POSTFIELDS] = http_build_query($data);         
-            $options[CURLOPT_CUSTOMREQUEST] = 'PATCH';
-        } else if ($method == 'GET' or $method == 'HEAD') {
-            if (!empty($data)) {
-                /* Update URL to container Query String of Paramaters */
-                $request_url .= '?' . http_build_query($data);
-            }
-        }
-        // $options[CURLOPT_VERBOSE] = true;
-        $options[CURLOPT_URL] = $request_url;
-        $options[CURLOPT_SSL_VERIFYPEER] = true;
-        $options[CURLOPT_CAINFO] = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'cacert.pem';
+        return api_request($method, $url, $data, $headers);
+    }
 
-        $this->curl = curl_init();
-        $setopt = curl_setopt_array($this->curl, $options);
-        $response = curl_exec($this->curl);
-        $headers = curl_getinfo($this->curl);
+    /**
+     * Make auth request
+     * 
+     * @return array
+     * 
+     * @throws Exception
+     * 
+     */
+    public function auth() {
+        $data = [
+            'client_id'     => self::$clientId,
+            'client_secret' => self::$clientSecret,
+        ];
 
-        $error_number = curl_errno($this->curl);
-        $error_message = curl_error($this->curl);
-        $response_obj = json_decode($response, true);
+        switch(self::$authType) {
+            case 'app':
+                $data['grant_type'] = 'client_credentials';
+            break;
 
-        if($error_number != 0){
-            if($error_number == 60){
-                throw new \Exception("Something went wrong. cURL raised an error with number: $error_number and message: $error_message. " .
-                                    "Please check http://stackoverflow.com/a/21114601/846892 for a fix." . PHP_EOL);
-            }
-            else{
-                throw new \Exception("Something went wrong. cURL raised an error with number: $error_number and message: $error_message." . PHP_EOL);
-            }
+            case 'user':
+                $data['grant_type'] = 'password';
+                $data['username'] = self::$username;
+                $data['password'] = self::$password;
+            break;
+
+            case 'refresh':
+                $data['grant_type']    = 'refresh_token';
+                $data['refresh_token'] = self::$refreshToken;
+            break;
+        };
+
+        $response = $this->request_api_data('POST', 'auth', $data);
+
+        if (!isset($response['access_token'])) {
+            throw new \Exception('Access token not received');
         }
 
-        if($response_obj['success'] == false) {
-            $message = json_encode($response_obj['message']);
-            throw new \Exception($message . PHP_EOL);
-        }
-        return $response_obj;
-    }
-
-    /**
-    * @return string URL to upload file or cover image asynchronously
-    */
-    public function getUploadUrl()
-    {
-        $result = $this->api_call('GET', 'links/get_file_upload_url', array());
-        return $result['upload_url'];
-    }
-
-    /**
-    * @param string $file_path
-    * @return string JSON returned when the file upload is complete.
-    */
-    public function uploadFile($file_path)
-    {
-        $upload_url = $this->getUploadUrl();
-        $file_path = realpath($file_path);
-        $file_name = basename($file_path);
-        $ch = curl_init();
-        $data = array('fileUpload' => $this->getCurlValue($file_path, $file_name));
-        curl_setopt($ch, CURLOPT_URL, $upload_url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        return curl_exec($ch);
-    }
-
-    public function getCurlValue($file_path, $file_name, $content_type='')
-    {
-        // http://stackoverflow.com/a/21048702/846892
-        // PHP 5.5 introduced a CurlFile object that deprecates the old @filename syntax
-        // See: https://wiki.php.net/rfc/curl-file-upload
-        if (function_exists('curl_file_create')) {
-            return curl_file_create($file_path, $content_type, $file_name);
-        }
-
-        // Use the old style if using an older version of PHP
-        $value = "@{$file_path};filename=$file_name";
-        if ($content_type) {
-            $value .= ';type=' . $content_type;
-        }
-
-        return $value;
-    }
-
-    /**
-    * Uploads any file or cover image mentioned in $link and 
-    * updates it with the json required by the API.
-    * @param array $link
-    * @return array $link updated with uploaded file information if applicable.
-    */
-    public function uploadMagic(array $link)
-    {
-        if(!empty($link['file_upload'])) {
-            $file_upload_json = $this->uploadFile($link['file_upload']);
-            $link['file_upload_json'] = $file_upload_json;
-            unset($link['file_upload']);
-        }
-        if(!empty($link['cover_image'])) {
-            $cover_image_json = $this->uploadFile($link['cover_image']);
-            $link['cover_image_json'] = $cover_image_json;
-            unset($link['cover_image']);
-        }
-        return $link;        
-    }
-
-    /**
-    * Authenticate using username and password of a user.
-    * Automatically updates the auth_token value.
-    * @param array $args contains username=>USERNAME and password=PASSWORD 
-    * @return array AuthToken object.
-    */
-    public function auth(array $args)
-    {
-        $response = $this->api_call('POST', 'auth', $args);
-        $this->auth_token = $response['auth_token']['auth_token']; 
-        return $this->auth_token; 
-    }
-
-    /**
-    * @return array list of Link objects.
-    */
-    public function linksList($limit, $path) 
-    {
-        $response = $this->api_call('GET', 'links', $this->getParamsArray($limit , $path) );   
-        return $response['links'];
-    }
-
-    /**
-    * @return array single Link object.
-    */  
-    public function linkDetail($slug) 
-    {
-        $response = $this->api_call('GET', 'links/' . $slug, array()); 
-        return $response['link'];
-    }
-
-    /**
-    * @return array single Link object.
-    */  
-    public function linkCreate(array $link) 
-    {   
-        if(empty($link['currency'])){
-            $link['currency'] = 'INR';
-        }
-        $link = $this->uploadMagic($link);
-        $response = $this->api_call('POST', 'links', $link);
-        return $response['link'];
-    }
-
-    /**
-    * @return array single Link object.
-    */  
-    public function linkEdit($slug, array $link) 
-    {
-        $link = $this->uploadMagic($link);
-        $response = $this->api_call('PATCH', 'links/' . $slug, $link);
-        return $response['link'];
-    }
-
-    /**
-    * @return array single Link object.
-    */  
-    public function linkDelete($slug) 
-    {
-        $response = $this->api_call('DELETE', 'links/' . $slug, array());
         return $response;
     }
 
     /**
-    * @return array list of Payment objects.
-    */  
-    public function paymentsList($limit = null, $page = null) 
-    {
-        $response = $this->api_call('GET', 'payments', $this->getParamsArray($limit , $page));
+     * Get payments
+     * 
+     * @return array
+     * 
+     */
+    public function payments($limit=null, $page=null) {
+        $data = [];
+
+        if (!is_null($limit)) {
+            $data['limit'] = $limit;
+        }
+
+        if (!is_null($page)) {
+            $data['page'] = $page;
+        }
+
+        $response = $this->request_api_data('GET', 'payments', $data);
+
         return $response['payments'];
     }
-
-    /**
-    * @param string payment_id as provided by paymentsList() or Instamojo's webhook or redirect functions.
-    * @return array single Payment object.
-    */  
-    public function paymentDetail($payment_id) 
-    {
-        $response = $this->api_call('GET', 'payments/' . $payment_id, array()); 
-        return $response['payment'];
-    }
-
-
-    /////   Request a Payment  /////
-
-    /**
-    * @param array single PaymentRequest object.
-    * @return array single PaymentRequest object.
-    */
-    public function paymentRequestCreate(array $payment_request) 
-    {
-        $response = $this->api_call('POST', 'payment-requests', $payment_request); 
-        return $response['payment_request'];
-    }
-
-    /**
-    * @param string id as provided by paymentRequestCreate, paymentRequestsList, webhook or redirect.
-    * @return array single PaymentRequest object.
-    */
-    public function paymentRequestStatus($id) 
-    {
-        $response = $this->api_call('GET', 'payment-requests/' . $id, array()); 
-        return $response['payment_request'];
-    }
-
-    /**
-    * @param string id as provided by paymentRequestCreate, paymentRequestsList, webhook or redirect.
-    * @param string payment_id as received with the redirection URL or webhook.
-    * @return array single PaymentRequest object.
-    */
-    public function paymentRequestPaymentStatus($id, $payment_id) 
-    {
-        $response = $this->api_call('GET', 'payment-requests/' . $id . '/' . $payment_id, array()); 
-        return $response['payment_request'];
-    }
-
-
-    /**
-    * @param array datetime_limits containing datetime data with keys 'max_created_at', 'min_created_at',
-    * 'min_modified_at' and 'max_modified_at' in ISO 8601 format(optional).
-    * @return array containing list of PaymentRequest objects.
-    * For more information on the allowed date formats check the
-    * docs: https://www.instamojo.com/developers/request-a-payment-api/#toc-filtering-payment-requests
-    */
-    public function paymentRequestsList( $limit = null , $page = null , $max_created_at = null , $min_created_at = null , $max_modified_at = null , $min_modified_at = null ) 
-    {
-        $endpoint = 'payment-requests';
-
-        $params = array();
-        if (!is_null($max_created_at)) {
-            $params['max_created_at'] = $max_created_at;
-        }
-
-        if (!is_null($min_created_at)) {
-            $params['min_created_at'] = $min_created_at;
-        }
-
-        if (!is_null($min_modified_at)) {
-            $params['min_modified_at'] = $min_modified_at;
-        }
-
-        if (!is_null($$max_modified_at)) {
-            $params['max_modified_at'] = $max_modified_at;
-        }
-
-        $response = $this->api_call('GET', 'payment-requests', array_merge($params , $this->getParamsArray($limit , $page)));
-        return $response['payment_requests'];
-    }
-
-
-    /////   Refunds  /////
-
-    /**
-    * @param array single Refund object.
-    * @return array single Refund object.
-    */
-    public function refundCreate(array $refund) 
-    {
-        $response = $this->api_call('POST', 'refunds', $refund); 
-        return $response['refund'];
-    }
-
-    /**
-    * @param string id as provided by refundCreate or refundsList.
-    * @return array single Refund object.
-    */
-    public function refundDetail($id) 
-    {
-        $response = $this->api_call('GET', 'refunds/' . $id, array()); 
-        return $response['refund'];
-    }
-
-    /**
-    * @return array containing list of Refund objects.
-    */
-    public function refundsList($limit, $path) 
-    {
-        $response = $this->api_call('GET', 'refunds', $this->getParamsArray($limit, $path)); 
-        return $response['refunds'];
-    }
-
 }
-?>

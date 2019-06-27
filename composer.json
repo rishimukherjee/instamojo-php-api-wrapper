@@ -18,8 +18,16 @@
     "autoload": {
         "psr-4": {
             "Instamojo\\": "src/"
-     }
+        },
+        "files": [
+            "src/Utilities.php"
+        ]
     },
+    "autoload-dev" : {
+		"psr-4" : {
+			"Instamojo\\Tests\\" : "tests/"
+		}
+	},
     "support": {
         "issues": "https://github.com/instamojo/instamojo-php/issues",
         "docs": "https://github.com/instamojo/instamojo-php/",
