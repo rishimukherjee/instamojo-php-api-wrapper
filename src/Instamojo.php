@@ -260,19 +260,6 @@ class Instamojo {
     }
 
     /**
-     * Build url for api request
-     * 
-     * @param $key
-     * 
-     * @return string
-     */
-    private function build_api_url($key)
-    {
-        $uri = Instamojo::URIS[$key];
-        return self::$baseUrl . '/' . $uri;
-    }
-
-    /**
      * Requests api data
      * 
      * @param $method
@@ -282,10 +269,11 @@ class Instamojo {
      * @return array
      * 
      */
-    private function request_api_data($method, $path, $data)
+    private function request_api_data($method, $path, $data=[])
     {
-        $url     = $this->build_api_url($path);
-        $headers = $this->build_headers($path == 'auth');
+        $headers = $this->build_headers(Instamojo::URIS['auth'] == $path);
+
+        $url = self::$baseUrl . '/' . $path;
 
         return api_request($method, $url, $data, $headers);
     }
@@ -321,7 +309,7 @@ class Instamojo {
             break;
         };
 
-        $response = $this->request_api_data('POST', 'auth', $data);
+        $response = $this->request_api_data('POST', Instamojo::URIS['auth'], $data);
 
         if (!isset($response['access_token'])) {
             throw new AuthenticationException();
@@ -336,7 +324,7 @@ class Instamojo {
      * @return array
      * 
      */
-    public function payments($limit=null, $page=null) {
+    public function getPayments($limit=null, $page=null) {
         $data = [];
 
         if (!is_null($limit)) {
@@ -347,8 +335,18 @@ class Instamojo {
             $data['page'] = $page;
         }
 
-        $response = $this->request_api_data('GET', 'payments', $data);
+        $response = $this->request_api_data('GET', Instamojo::URIS['payments'], $data);
 
         return $response['payments'];
+    }
+
+    /**
+     * Get details of payment
+     * 
+     * @return object
+     * 
+     */
+    public function getPaymentDetails($id) {
+        return $this->request_api_data('GET', Instamojo::URIS['payments'] . $id . '/');
     }
 }
