@@ -1,5 +1,10 @@
 <?php
 
+	use Instamojo\Exceptions\ApiException;
+	use Instamojo\Exceptions\InvalidRequestException;
+	use Instamojo\Exceptions\AuthenticationException;
+	use Instamojo\Exceptions\ActionForbiddenException;
+
 	/**
 	 * 
      * @param string $method ('GET', 'POST', 'DELETE', 'PATCH')
@@ -39,7 +44,8 @@
 
         $curl_request = curl_init();
         $setopt = curl_setopt_array($curl_request, $options);
-        $response = curl_exec($curl_request);
+		$response = curl_exec($curl_request);
+		$http_code = curl_getinfo($curl_request, CURLINFO_HTTP_CODE);
         $headers = curl_getinfo($curl_request);
 
         $error_number = curl_errno($curl_request);
@@ -48,17 +54,25 @@
 
         if($error_number != 0){
             if($error_number == 60){
-                throw new \Exception("Something went wrong. cURL raised an error with number: $error_number and message: $error_message. " .
+                throw new InvalidRequestException("Something went wrong. cURL raised an error with number: $error_number and message: $error_message. " .
                                     "Please check http://stackoverflow.com/a/21114601/846892 for a fix." . PHP_EOL);
             }
             else{
-                throw new \Exception("Something went wrong. cURL raised an error with number: $error_number and message: $error_message." . PHP_EOL);
+				throw new InvalidRequestException("Something went wrong. cURL raised an error with number: $error_number and message: $error_message." . PHP_EOL);
             }
         }
 
         if(isset($response_obj['success']) && $response_obj['success'] == false) {
-            $message = json_encode($response_obj['message']);
-            throw new \Exception($message . PHP_EOL);
+			$message = isset($response_obj['message']) ? $response_obj['message'] : 'Bad request';
+			
+			switch($http_code) {
+				case 401:
+					throw new AuthenticationException();
+				case 403:
+					throw new ActionForbiddenException($message);
+				default:
+					throw new ApiException($http_code, $error_number, $message);
+			}  
 		}
 		
         return $response_obj;

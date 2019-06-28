@@ -2,6 +2,10 @@
 
 namespace Instamojo;
 
+use Instamojo\Exceptions\AuthenticationException;
+use Instamojo\Exceptions\InvalidRequestException;
+use Instamojo\Exceptions\MissingParameterException;
+
 class Instamojo {
     // Constants
     const API_VERSION         = '2';
@@ -202,30 +206,31 @@ class Instamojo {
      * 
      * @return null
      * 
-     * @throws Exception
+     * @throws InvalidRequestException 
+     * @throws MissingParameterException
      * 
      */
     private static function validateTypeParams($type, $params)
     {
         if (!in_array(strtolower($type), Instamojo::VALID_TYPES)) {
-            throw new \Exception('Invalid type');
+            throw new InvalidRequestException('Invalid init type');
         }
 
         if (empty($params['client_id'])) {
-            throw new \Exception('Client Id is missing');
+            throw new MissingParameterException('Client Id is missing');
         }
 
         if (empty($params['client_secret'])) {
-            throw new \Exception('Client Secret is missing');
+            throw new MissingParameterException('Client Secret is missing');
         }
 
         if (strtolower($type) == 'user') {
             if (empty($params['username'])) {
-                throw new \Exception('Username is missing');
+                throw new MissingParameterException('Username is missing');
             }
 
             if (empty($params['password'])) {
-                throw new \Exception('Password is missing');
+                throw new MissingParameterException('Password is missing');
             }
         }
     }
@@ -246,7 +251,7 @@ class Instamojo {
         $headers = [];
 
         if(!$auth && empty(Instamojo::$accessToken)) {
-            throw new \Exception('Access token not available');
+            throw new InvalidRequestException('Access token not available');
         }
 
         $headers[] = "Authorization: Bearer ".Instamojo::$accessToken;
@@ -319,7 +324,7 @@ class Instamojo {
         $response = $this->request_api_data('POST', 'auth', $data);
 
         if (!isset($response['access_token'])) {
-            throw new \Exception('Access token not received');
+            throw new AuthenticationException();
         }
 
         return $response;
