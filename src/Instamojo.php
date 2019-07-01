@@ -16,7 +16,8 @@ class Instamojo {
     const URIS = [
         "auth"              => "oauth2/token/",
         "payments"          => "v".self::API_VERSION."/payments/",
-        "payment_requests"  => "v".self::API_VERSION."/payment_requests/"
+        "payment_requests"  => "v".self::API_VERSION."/payment_requests/",
+        "gateway_orders"    => "v".self::API_VERSION."/gateway/orders/",
     ];
 
     // Static Variables
@@ -390,6 +391,66 @@ class Instamojo {
     public function createPaymentRequest($params)
     {
         $response = $this->request_api_data('POST', Instamojo::URIS['payment_requests'], $params);
+        
+        return $response;
+    }
+
+    /**
+     * Create gateway order
+     * 
+     * @param $params
+     * 
+     * @return array
+     * 
+     */
+    public function createGatewayOrder($params)
+    {
+        $response = $this->request_api_data('POST', Instamojo::URIS['gateway_orders'], $params);
+        
+        return $response;
+    }
+
+    /**
+     * Create gateway order for payment request
+     * 
+     * @param $payment_request_id
+     * @param $params
+     * 
+     * @return array
+     * 
+     */
+    public function createGatewayOrderForPaymentRequest($payment_request_id, $params)
+    {
+        //payment request id
+        $data = [
+            'id' => $payment_request_id
+        ];
+
+        //name
+        $data['name'] = (!empty($params['name'])) ? $params['name'] : null;
+
+        //email
+        $data['email'] = (!empty($params['email'])) ? $params['email'] : null;
+
+        //phone
+        $data['phone'] = (!empty($params['phone'])) ? $params['phone'] : null;
+
+        $response = $this->request_api_data('POST', Instamojo::URIS['gateway_orders'] . "payment-request/", $data);
+        
+        return $response;
+    }
+
+    /**
+     * Get gateway order
+     * 
+     * @param $id
+     * 
+     * @return array
+     * 
+     */
+    public function getGatewayOrder($id)
+    {
+        $response = $this->request_api_data('GET', Instamojo::URIS['gateway_orders'] . "id:$id/");
         
         return $response;
     }
