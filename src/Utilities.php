@@ -15,6 +15,8 @@
      */
     function api_request($method, $request_url, array $data=[], array $headers=[]) 
     {
+        $http_success_codes = [200, 201, 202, 204];
+
         $method = (string) $method;
         $data = (array) $data;
 
@@ -62,8 +64,8 @@
             }
         }
 
-        if((isset($response_obj['success']) && $response_obj['success'] == false) || $http_code != 200) {
-            
+        if(!in_array($http_code, $http_success_codes) || (isset($response_obj['success']) && $response_obj['success'] == false)) {
+
 			$message = isset($response_obj['message']) ? $response_obj['message'] : 'Invalid request';
 			
 			switch($http_code) {

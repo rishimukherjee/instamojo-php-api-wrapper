@@ -14,8 +14,9 @@ class Instamojo {
     const PRODUCTION_BASE_URL = 'https://api.instamojo.com/';
     
     const URIS = [
-        "auth"     => "oauth2/token/",
-        "payments" => "v".self::API_VERSION."/payments/"
+        "auth"              => "oauth2/token/",
+        "payments"          => "v".self::API_VERSION."/payments/",
+        "payment_requests"  => "v".self::API_VERSION."/payment_requests/"
     ];
 
     // Static Variables
@@ -273,7 +274,7 @@ class Instamojo {
     {
         $headers = $this->build_headers(Instamojo::URIS['auth'] == $path);
 
-        $url = self::$baseUrl . '/' . $path;
+        $url = self::$baseUrl . $path;
 
         return api_request($method, $url, $data, $headers);
     }
@@ -375,6 +376,21 @@ class Instamojo {
 
         $response = $this->request_api_data('POST', Instamojo::URIS['payments'] . $payment_id . '/refund/', $data);
 
+        return $response;
+    }
+
+    /**
+     * Create payment request
+     * 
+     * @param $params
+     * 
+     * @return array
+     * 
+     */
+    public function createPaymentRequest($params)
+    {
+        $response = $this->request_api_data('POST', Instamojo::URIS['payment_requests'], $params);
+        
         return $response;
     }
 }
