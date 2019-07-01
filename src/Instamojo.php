@@ -349,4 +349,32 @@ class Instamojo {
     public function getPaymentDetails($id) {
         return $this->request_api_data('GET', Instamojo::URIS['payments'] . $id . '/');
     }
+
+    /**
+     * Get refund request for a payment
+     * 
+     * @param $payment_id
+     * @param $params
+     * 
+     * @return array
+     */
+    public function createRefundForPayment($payment_id, $params) {
+        $data = [];
+
+        //transaction id
+        $data['transaction_id'] = (!empty($params['transaction_id'])) ? $params['transaction_id'] : null;
+
+        //refund type
+        $data['type'] = (!empty($params['type'])) ? $params['type'] : null;
+
+        //explaination body
+        $data['body'] = (!empty($params['body'])) ? $params['body'] : null;
+
+        //refund amount
+        $data['refund_amount'] = (!empty($params['refund_amount'])) ? $params['refund_amount'] : null;
+
+        $response = $this->request_api_data('POST', Instamojo::URIS['payments'] . $payment_id . '/refund/', $data);
+
+        return $response;
+    }
 }

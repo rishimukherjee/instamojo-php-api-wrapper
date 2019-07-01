@@ -12,9 +12,9 @@ class InstamojoException extends Exception {
     public function __construct($httpErrorCode, $errorNumber, $errorMessage) {
 		parent::__construct ($errorMessage);
 
-		$this->errorMessage = $httpErrorCode;
-		$this->errorMessage = $errorNumber;
-        $this->errorMessage = $errorMessage;
+		$this->httpErrorCode = $httpErrorCode;
+		$this->errorNumber   = $errorNumber;
+        $this->errorMessage  = $errorMessage;
 	}
 
 	public function getHttpErrorCode() {

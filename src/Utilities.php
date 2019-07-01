@@ -62,8 +62,9 @@
             }
         }
 
-        if(isset($response_obj['success']) && $response_obj['success'] == false) {
-			$message = isset($response_obj['message']) ? $response_obj['message'] : 'Bad request';
+        if((isset($response_obj['success']) && $response_obj['success'] == false) || $http_code != 200) {
+            
+			$message = isset($response_obj['message']) ? $response_obj['message'] : 'Invalid request';
 			
 			switch($http_code) {
 				case 401:
