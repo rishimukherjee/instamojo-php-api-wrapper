@@ -18,6 +18,7 @@ class Instamojo {
         "payments"          => "v".self::API_VERSION."/payments/",
         "payment_requests"  => "v".self::API_VERSION."/payment_requests/",
         "gateway_orders"    => "v".self::API_VERSION."/gateway/orders/",
+        "refunds"           => "v".self::API_VERSION."/refunds/",
     ];
 
     // Static Variables
@@ -453,5 +454,42 @@ class Instamojo {
         $response = $this->request_api_data('GET', Instamojo::URIS['gateway_orders'] . "id:$id/");
         
         return $response;
+    }
+
+    /**
+     * Get refunds
+     * 
+     * @param $limit
+     * @param $page
+     * 
+     * @return array
+     * 
+     */
+    public function getRefunds($limit=null, $page=null) {
+        $data = [];
+
+        if (!is_null($limit)) {
+            $data['limit'] = $limit;
+        }
+
+        if (!is_null($page)) {
+            $data['page'] = $page;
+        }
+
+        $response = $this->request_api_data('GET', Instamojo::URIS['refunds'], $data);
+
+        return $response['refunds'];
+    }
+
+    /**
+     * Get details of refund
+     * 
+     * @param $id
+     * 
+     * @return object
+     * 
+     */
+    public function getRefundDetails($id) {
+        return $this->request_api_data('GET', Instamojo::URIS['refunds'] . $id . '/');
     }
 }
