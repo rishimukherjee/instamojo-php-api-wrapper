@@ -9,7 +9,7 @@ use Instamojo\Exceptions\MissingParameterException;
 class Instamojo {
     // Constants
     const API_VERSION         = '2';
-    const VALID_TYPES         = ['app', 'user', 'refresh'];
+    const VALID_TYPES         = ['app', 'user'];
     const TEST_BASE_URL       = 'https://test.instamojo.com/';
     const PRODUCTION_BASE_URL = 'https://api.instamojo.com/';
     
@@ -289,34 +289,46 @@ class Instamojo {
      * @throws Exception
      * 
      */
-    public function auth() {
+    public function auth($refresh=false) {
         $data = [
             'client_id'     => self::$clientId,
             'client_secret' => self::$clientSecret,
         ];
 
-        switch(self::$authType) {
-            case 'app':
-                $data['grant_type'] = 'client_credentials';
-            break;
+        if ($refresh) {
+            $data['grant_type']    = 'refresh_token';
+            $data['refresh_token'] = self::$refreshToken;
+        } else {
+            switch(self::$authType) {
+                case 'app':
+                    $data['grant_type'] = 'client_credentials';
+                break;
 
-            case 'user':
-                $data['grant_type'] = 'password';
-                $data['username'] = self::$username;
-                $data['password'] = self::$password;
-            break;
-
-            case 'refresh':
-                $data['grant_type']    = 'refresh_token';
-                $data['refresh_token'] = self::$refreshToken;
-            break;
-        };
+                case 'user':
+                    $data['grant_type'] = 'password';
+                    $data['username'] = self::$username;
+                    $data['password'] = self::$password;
+                break;
+            };
+        }
 
         $response = $this->request_api_data('POST', Instamojo::URIS['auth'], $data);
 
+        //check for access token
         if (!isset($response['access_token'])) {
             throw new AuthenticationException();
         }
+
+        //check refresh token, incase of auth refresh
+        if ($refresh) {
+            if (!isset($response['refresh_token'])) {
+                throw new AuthenticationException();
+            }else {
+                self::$refreshToken = $response['refresh_token'];
+            }
+        }
+
+        self::$accessToken = $response['access_token'];
 
         return $response;
     }
