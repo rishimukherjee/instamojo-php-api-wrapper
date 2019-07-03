@@ -469,6 +469,31 @@ class Instamojo {
     }
 
     /**
+     * Get gateway orders list
+     * 
+     * @param $limit
+     * @param $page
+     * 
+     * @return array
+     * 
+     */
+    public function getGatewayOrders($limit=null, $page=null) {
+        $data = [];
+
+        if (!is_null($limit)) {
+            $data['limit'] = $limit;
+        }
+
+        if (!is_null($page)) {
+            $data['page'] = $page;
+        }
+
+        $response = $this->request_api_data('GET', Instamojo::URIS['gateway_orders'], $data);
+
+        return $response['orders'];
+    }
+
+    /**
      * Get refunds
      * 
      * @param $limit
