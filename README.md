@@ -82,7 +82,7 @@ Here `['PAYMENT REQUEST ID']` is the value of `'id'` key returned by the `paymen
 `['PAYMENT ID']` is the Payment ID received with redirection URL or webhook.
 
 
-### Get a list of all Payment Requests
+### Get a list of Payment Requests
 
 ```php
 try {
@@ -94,16 +94,16 @@ catch (Exception $e) {
 }
 ```
 
-
 This will give you an array containing Payment Requests created so far. Note that the payments related to individual Payment Request are not returned with this query.
 
-`paymentRequestsList()` also accepts an optional array containing keys `'max_created_at'` , `'min_created_at'`, `'min_modified_at'` and `'max_modified_at'` for filtering the list of Payment Requests. Note that it is not required to pass all of the keys.
+`paymentRequestsList()` also accepts *optional* parameters for pagination as well as filtering based on created_at and updated_at fields.
 
 ```php
-$response = $api->paymentRequestsList(array(
-    "max_created_at" => "2015-11-19T10:12:19Z",
-    "min_created_at" => "2015-10-29T12:51:36Z"
-    ));
+paymentRequestsList($limit=null, $page=null, $max_created_at=null, $min_created_at=null, $max_modified_at=null, $min_modified_at=null)
+```
+For example:
+```php
+$response = $api->paymentRequestsList(50, 1, "2015-11-19T10:12:19Z", "2015-10-29T12:51:36Z");
 ```
 
 For details related to supported datetime format check the documentation: https://www.instamojo.com/developers/request-a-payment-api/#toc-filtering-payment-requests
