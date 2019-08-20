@@ -21,6 +21,9 @@ class Instamojo {
         "refunds"           => "v".self::API_VERSION."/refunds/",
     ];
 
+  
+
+
     // Static Variables
 
     /**
@@ -173,17 +176,22 @@ class Instamojo {
      */
     static function init($type='app', $params, $test=false)
     {
-        if (self::$thisObj != null) {
-            return self::$thisObj;
-        } else {
-            self::validateTypeParams($type, $params);
+        // $scope = isset($params['scope']) ? $params['scope'] : NULL;
 
+        // if (self::$thisObj != null && (self::$scope == $scope || $scope == NULL ) ) {
+            
+        //     return self::$thisObj;
+
+        // } else {
+            
+            self::validateTypeParams($type, $params);
             self::$authType     = $type;
             self::$clientId     = $params['client_id'];
             self::$clientSecret = $params['client_secret'];
             self::$username     = isset($params['username']) ? $params['username'] : '';
             self::$password     = isset($params['password']) ? $params['password'] : '';
             self::$baseUrl      = Instamojo::PRODUCTION_BASE_URL;
+            self::$scope        = isset($params['scope']) ? $params['scope'] : null;
 
             if ($test) {
                 self::$baseUrl = Instamojo::TEST_BASE_URL;
@@ -192,13 +200,13 @@ class Instamojo {
             self::$thisObj = new Instamojo();
 
             $auth_response = self::$thisObj->auth();
-
+         
             self::$accessToken  = $auth_response['access_token'];
             self::$refreshToken = isset($auth_response['refresh_token']) ? $auth_response['refresh_token'] : '';
-            self::$scope        = isset($auth_response['scope']) ? $auth_response['scope'] : '';
+            self::$scope = isset($auth_response['scope']) ? $auth_response['scope'] : '';
 
             return self::$thisObj;
-        }
+       // }
     }
 
     /**
@@ -277,7 +285,7 @@ class Instamojo {
         $headers = $this->build_headers(Instamojo::URIS['auth'] == $path);
 
         $url = self::$baseUrl . $path;
-
+        
         return api_request($method, $url, $data, $headers);
     }
 
@@ -312,8 +320,13 @@ class Instamojo {
             };
         }
 
-        $response = $this->request_api_data('POST', Instamojo::URIS['auth'], $data);
+        if(self::$scope !=null ) {
 
+            $data['scope'] = self::$scope;
+        }
+        
+        $response = $this->request_api_data('POST', Instamojo::URIS['auth'], $data);
+        
         //check for access token
         if (!isset($response['access_token'])) {
             throw new AuthenticationException();
@@ -323,7 +336,7 @@ class Instamojo {
         if ($refresh) {
             if (!isset($response['refresh_token'])) {
                 throw new AuthenticationException();
-            }else {
+            } else {
                 self::$refreshToken = $response['refresh_token'];
             }
         }
@@ -373,7 +386,8 @@ class Instamojo {
      * 
      * @return array
      */
-    public function createRefundForPayment($payment_id, $params) {
+    public function createRefundForPayment($payment_id, $params)
+    {
         $data = [];
 
         //transaction id
@@ -387,10 +401,10 @@ class Instamojo {
 
         //refund amount
         $data['refund_amount'] = (!empty($params['refund_amount'])) ? $params['refund_amount'] : null;
-
+       
         $response = $this->request_api_data('POST', Instamojo::URIS['payments'] . $payment_id . '/refund/', $data);
 
-        return $response;
+         return $response;
     }
 
     /**
@@ -404,6 +418,47 @@ class Instamojo {
     public function createPaymentRequest($params)
     {
         $response = $this->request_api_data('POST', Instamojo::URIS['payment_requests'], $params);
+        
+        return $response;
+    }
+
+    /**
+     * get payment request
+     * 
+     * @param $params
+     * 
+     * @return array
+     * 
+     */
+    public function getPaymentRequests($limit=null, $page=null)
+    {
+        $data = [];
+
+        if (!is_null($limit)) {
+            $data['limit'] = $limit;
+        }
+
+        if (!is_null($page)) {
+            $data['page'] = $page;
+        }
+      
+        $response = $this->request_api_data('GET', Instamojo::URIS['payment_requests'], $data);
+        
+        return $response['payment_requests'];
+    }
+
+    /**
+     * Get gateway order
+     * 
+     * @param $id
+     * 
+     * @return array
+     * 
+     */
+    public function getPaymentRequestDetails($id)
+    {
+
+        $response = $this->request_api_data('GET', Instamojo::URIS['payment_requests'] . $id ."/");
         
         return $response;
     }
@@ -503,6 +558,7 @@ class Instamojo {
      * 
      */
     public function getRefunds($limit=null, $page=null) {
+
         $data = [];
 
         if (!is_null($limit)) {
