@@ -1,50 +1,136 @@
-# Instamojo PHP API
+# Instamojo PHP API [![Latest Stable Version](https://poser.pugx.org/instamojo/instamojo-php/v/stable)](https://packagist.org/packages/instamojo/instamojo-php) [![License](https://poser.pugx.org/instamojo/instamojo-php/license)](https://opensource.org/licenses/MIT)
 
-Assists you to programmatically create, edit and delete offers on Instamojo in PHP.
+Assists you to programmatically create, edit and delete Links on Instamojo in PHP.
+
+**Note**: If you're using this wrapper with our sandbox environment `https://test.instamojo.com/` then you should pass `'https://test.instamojo.com/api/1.1/'` as third argument to the `Instamojo` class while initializing it. API key and Auth token for the same can be obtained from https://test.instamojo.com/developers/ (Details: [Test Or Sandbox Account](https://instamojo.zendesk.com/hc/en-us/articles/208485675-Test-or-Sandbox-Account)).
+
+
+```php
+$api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN, 'https://test.instamojo.com/api/1.1/');
+```
+
+## Installing via [Composer](https://getcomposer.org/)
+```bash
+$ php composer.phar require instamojo/instamojo-php
+```
+
+**Note**: If you're not using Composer then directly include the contents of `src` directory in your project.
 
 
 ## Usage
 
-    $instance = new Instamojo('USERNAME', 'PASSWORD', 'TOKEN_FROM_INSTAMOJO');
-    $auth = $instance->apiAuth();
-    $instance->setTitle('TITLE');
-    $instance->setDescription('DESCRIPTION');
-    $instance->setCurrency('INR');
-    $instance->setBasePrice('100');
-    $instance->setFilePath('IMG.jpg');
-    $instance->setCoverPath('COVER.jpg');
-    $offer = $instance->createOffer();
-    print_r($offer); 
+```php
+$api = new Instamojo\Instamojo(API_KEY, AUTH_TOKEN);
+```
 
-This will give you JSON object containing details of the offer that was just created.
+### Create a new Payment Request
 
-## Available Functions
+```php
+try {
+    $response = $api->paymentRequestCreate(array(
+        "purpose" => "FIFA 16",
+        "amount" => "3499",
+        "send_email" => true,
+        "email" => "foo@example.com",
+        "redirect_url" => "http://www.example.com/handle_redirect.php"
+        ));
+    print_r($response);
+}
+catch (Exception $e) {
+    print('Error: ' . $e->getMessage());
+}
+```
 
-You have these functions to interact with the API:
+This will give you JSON object containing details of the Payment Request that was just created.
 
- * `getVersion()` Get the version of the API wrapper.
- * `apiAuth()` Authenticate the application.
- * `listAllOffers()` List all the offers of the user.
- * `listOneOfferDetail(slug)` List the complete offer details of the offer id mentioned in slug. 
- * `deleteAuthToken()` WARNING!! Deletes the authentication token recieved from Instamojo. Nothing will work after deleting this.
- * `archiveOffer(slug)` Archives(Deletes) the offer whos id is supplied.
- * `setTitle(title)` Title, keep concise since slug is auto-generated.
- * `setDescription(description)` Detailed description of the offer, can contain markdown.
- * `setCurrency(currency)` Currency of the offer. Can be INR or USD.
- * `setBasePrice(base_price)` Price of the offer as a decimal (up to 2 decimal places)
- * `setQuantity(quantity)` Keep zero for unlimited quantity, any other positive number will limit sales/claims of the offer and make it unavailable afterwards.
- * `setStartDate(start_date)` Required for events, date-time when the event begins. Format: YYYY-MM-DD HH:mm
- * `setEndDate(end_date)` Required for events, date-time when the event ends. Format: YYYY-MM-DD HH:mm
- * `setTimeZone(timezone)` Required for events, date-time when the event begins. Format: YYYY-MM-DD HH:mm
- * `setVenue(venue)` Required for events, location where the event will be held.
- * `setRedirectURL(redirect_url)` You can set this to a thank-you page on your site. Buyers will be redirected here after successful payment.
- * `setNote(note)` A note to be displayed to buyer after successful payment. This will also be sent via email and in the receipt/ticket that is sent as attachment to the email.
- * `setFilePath(file_path)` Path to the file you want to sell.
- * `setCoverPath(cover_path)` Path to the cover image. This resolution of this image should be 950X320.
- * `createOffer()` Function to create an instamojo offer.
- * `editOffer(slug)` Function to to edit an offer.
- 
 
-For `createOffer()`, `setTitle(title)`, `setBasePrice(base_price)` and `setCurrency(currency)` are the bare minimum
-pieces of information that is required. You can (and should) as much relevant information as possible.
+### Get the status or details of a Payment Request
 
+```php
+try {
+    $response = $api->paymentRequestStatus(['PAYMENT REQUEST ID']);
+    print_r($response);
+}
+catch (Exception $e) {
+    print('Error: ' . $e->getMessage());
+}
+```
+
+This will give you JSON object containing details of the Payment Request and the payments related to it.
+Key for payments is `'payments'`.
+
+Here `['PAYMENT REQUEST ID']` is the value of `'id'` key returned by the `paymentRequestCreate()` query.
+
+
+### Get the status of a Payment related to a Payment Request
+
+```php
+try {
+    $response = $api->paymentRequestPaymentStatus(['PAYMENT REQUEST ID'], ['PAYMENT ID']);
+    print_r($response['purpose']);  // print purpose of payment request
+    print_r($response['payment']['status']);  // print status of payment
+}
+catch (Exception $e) {
+    print('Error: ' . $e->getMessage());
+}
+```
+
+This will give you JSON object containing details of the Payment Request and the payments related to it.
+Key for payments is `'payments'`.
+
+Here `['PAYMENT REQUEST ID']` is the value of `'id'` key returned by the `paymentRequestCreate()` query and
+`['PAYMENT ID']` is the Payment ID received with redirection URL or webhook.
+
+
+### Get a list of Payment Requests
+
+```php
+try {
+    $response = $api->paymentRequestsList();
+    print_r($response);
+}
+catch (Exception $e) {
+    print('Error: ' . $e->getMessage());
+}
+```
+
+This will give you an array containing Payment Requests created so far. Note that the payments related to individual Payment Request are not returned with this query.
+
+`paymentRequestsList()` also accepts *optional* parameters for pagination as well as filtering based on created_at and updated_at fields.
+
+```php
+paymentRequestsList($limit=null, $page=null, $max_created_at=null, $min_created_at=null, $max_modified_at=null, $min_modified_at=null)
+```
+For example:
+```php
+$response = $api->paymentRequestsList(50, 1, "2015-11-19T10:12:19Z", "2015-10-29T12:51:36Z");
+```
+
+For details related to supported datetime format check the documentation: https://www.instamojo.com/developers/request-a-payment-api/#toc-filtering-payment-requests
+
+## Available Request a Payment Functions
+
+You have these functions to interact with the Request a Payment API:
+
+  * `paymentRequestCreate(array $payment_request)` Create a new Payment Request.
+  * `paymentRequestStatus($id)` Get details of Payment Request specified by its unique id.
+  * `paymentRequestsList(array $datetime_limits)` Get a list of all Payment Requests. The `$datetime_limits` argument is optional an can be used to filter Payment Requests by their creation and modification date.
+
+## Payment Request Creation Parameters
+
+### Required
+  * `purpose`: Purpose of the payment request. (max-characters: 30)
+  * `amount`: Amount requested (min-value: 9 ; max-value: 200000)
+
+### Optional
+  * `buyer_name`: Name of the payer. (max-characters: 100)
+  * `email`: Email of the payer. (max-characters: 75)
+  * `phone`: Phone number of the payer.
+  * `send_email`: Set this to `true` if you want to send email to the payer if email is specified. If email is not specified then an error is raised. (default value: `false`)
+  * `send_sms`: Set this to `true` if you want to send SMS to the payer if phone is specified. If phone is not specified then an error is raised. (default value: `false`)
+  * `redirect_url`: set this to a thank-you page on your site. Buyers will be redirected here after successful payment.
+  * `webhook`: set this to a URL that can accept POST requests made by Instamojo server after successful payment.
+  * `allow_repeated_payments`: To disallow multiple successful payments on a Payment Request pass `false` for this field. If this is set to `false` then the link is not accessible publicly after first successful payment, though you can still access it using API(default value: `true`).
+
+
+Further documentation is available at https://docs.instamojo.com/v1.1/docs
