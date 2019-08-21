@@ -124,6 +124,7 @@ getPayments() also accepts optional parameters for pagination.
 getPayments($limit=null, $page=null)
 ```
 
+
 For example:
 
 ```php
@@ -131,6 +132,7 @@ $response = $api->getPayments(50, 1);
 ```
 
 ### Get the  details of a Payment
+
 
 ```php
 try {
@@ -141,6 +143,7 @@ catch (Exception $e) {
     print('Error: ' . $e->getMessage());
 }
 ```
+
 
 This will give you JSON object containing details of the Payment.
 
