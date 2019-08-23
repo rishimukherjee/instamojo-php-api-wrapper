@@ -57,7 +57,32 @@ catch (Exception $e) {
 }
 ```
 
-This will give you JSON object containing details of the Payment Request that was just created.
+This will give you JSON object containing details of the Payment Request that was just created with `longurl` key provide you instamojo-payment-url.
+
+### Recommended seamless checkout Option
+ You can render your Instamojo checkout form and collect payments on your webpage with just the instamojo-payment-url obtained in `createPaymentRequest()`.To know more how its work [Click here](https://docs.instamojo.com/page/seamless-checkout).
+
+## Payment Request Creation Parameters
+
+### Required
+  * `purpose`: Purpose of the payment request.
+  * `amount`: The amount for the request. The minimum amount is 9. And the maximum is 200000.
+
+### Optional
+  * `buyer_name`: Name of the payer.
+  * `email`: Email of the payer. 
+  * `phone`: Phone number of the payer.
+  * `send_email`: Set this to `true` if you want to send email to the payer if email is specified. If email is not specified then an error is raised. (default value: `false`)
+  * `send_sms`: Set this to `true` if you want to send SMS to the payer if phone is specified. If phone is not specified then an error is raised. (default value: `false`)
+  * `redirect_url`: set this to a thank-you page on your site. Buyers will be redirected here after successful payment.
+  * `webhook`: set this to a URL that can accept POST requests made by Instamojo server after successful payment.
+  * `allow_repeated_payments`: To disallow multiple successful payments on a Payment Request pass `false` for this field. If this is set to `false` then the link is not accessible publicly after first successful payment, though you can still access it using API(default value: `true`).
+  * `partner_fee_type` : Allows you to receive a cut from from payments you facilitate. For fixed fee set this to `fixed`, or for percentage fee set it to `percent`.
+  * `partner_fee` : This describes the fee that you would collect. It can be either a fixed amount, or a percentage of the original amount, depending on the value of `partner_fee_type`.
+  * `mark_fulfilled` : Flag to determine if you want to put the payment on hold until you explicitly fulfil it. If `mark_fulfilled` is `True` the payment will be paid out to the merchant. If `mark_fulfilled` is `False`, then the payment will be put on hold until you explicitly fulfil the payment. See Fulfil a Payment below on how to fulfil a payment.
+  * `expires_at` : Time after which the payment request will be expired in UTC timestamp. Max value is 600 seconds. Default is Null.
+    
+
 
 
 ### Get the status or details of a Payment Request
@@ -187,6 +212,7 @@ catch (Exception $e) {
     print('Error: ' . $e->getMessage());
 }
 ```
+`$payment_request_id` id the `id` key obtained in `createPaymentRequest()` method.
 
 This will give you JSON object containing with created `order_id` key.
 
