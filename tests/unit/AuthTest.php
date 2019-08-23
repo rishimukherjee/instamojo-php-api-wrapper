@@ -39,5 +39,30 @@ class AuthTest extends TestCase
         ],true);
 
     }
+
+    public function test_throw_Exception_user_based_authentication_on_missing_user_name() {
+        
+        $this->expectException(\Instamojo\Exceptions\MissingParameterException::class);
+        
+        $instaobj = Instamojo\Instamojo::init('user',[
+            "client_id" => $_ENV["CLIENT_ID"],
+            "client_secret" => "ABC",
+            "password" => "XXXX"
+        ],true);
+
+    }
+
+    public function test_throw_Exception_user_based_authentication_on_missing_password() {
+        
+        $this->expectException(\Instamojo\Exceptions\MissingParameterException::class);
+        
+        $instaobj = Instamojo\Instamojo::init('user',[
+            "client_id" => $_ENV["CLIENT_ID"],
+            "client_secret" => "ABC",
+            "username" => "test_user"
+        ],true);
+
+    }
+
 }
 ?>

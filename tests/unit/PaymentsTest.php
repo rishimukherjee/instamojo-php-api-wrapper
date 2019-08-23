@@ -79,7 +79,7 @@ class PaymentsTest extends TestCase
         $this->assertTrue(is_array($payment_requests));
     } 
     
-    public function test_get_payment_requests_limit()
+    public function test_get_payment_requests_with_limit_paramter()
     {
         $payment_requests = $this->instaobj->getPaymentRequests(10,1);
 
