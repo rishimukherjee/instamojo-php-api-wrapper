@@ -2,7 +2,12 @@
 
 Assists you to programmatically create, edit and delete Links on Instamojo in PHP.
 
-**Note**: If you're using this wrapper with our sandbox environment `https://test.instamojo.com/` then you should pass `true` as third argument to the `Instamojo` class while initializing it. `client_id` and `client_secret` token for the same can be obtained from https://test.instamojo.com/developers/ (Details: [Test Or Sandbox Account](https://instamojo.zendesk.com/hc/en-us/articles/208485675-Test-or-Sandbox-Account)).
+**Note**: 
+* If you're using this wrapper with our sandbox environment `https://test.instamojo.com/` then you should pass `true` as third argument to the `Instamojo` class while initializing it. `client_id` and `client_secret` token for the same can be obtained from https://test.instamojo.com/developers/ (Details: [Test Or Sandbox Account](https://instamojo.zendesk.com/hc/en-us/articles/208485675-Test-or-Sandbox-Account)).
+
+* If you are using other version of instamojo-php you can refer to their docs from appropriate link below
+  [For v1.1 click here](https://github.com/squareboat/instamojo-php-v2/tree/dev/docs/v1.1)
+
 
 ```php
 $authType = "app/user" /**Depend on app or user based authentication**/
@@ -60,7 +65,7 @@ catch (Exception $e) {
 This will give you JSON object containing details of the Payment Request that was just created with `longurl` key provide you instamojo-payment-url.
 
 ### Recommended seamless checkout Option
- You can render your Instamojo checkout form and collect payments on your webpage with just the instamojo-payment-url obtained in `createPaymentRequest()`.To know more how its work [Click here](https://docs.instamojo.com/page/seamless-checkout).
+ You can render your Instamojo checkout form and collect payments on your webpage with just the instamojo-payment-url obtained in `createPaymentRequest()` using JS based seamless checkout library. To know more how its work [Click here](https://docs.instamojo.com/page/seamless-checkout).
 
 ## Payment Request Creation Parameters
 
