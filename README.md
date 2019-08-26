@@ -3,10 +3,12 @@
 Assists you to programmatically create, edit and delete Links on Instamojo in PHP.
 
 **Note**: 
+* If you are using other version of instamojo-php you can refer to their docs from appropriate link below
+  * [For v1.1 click here](https://github.com/squareboat/instamojo-php-v2/tree/dev/docs/v1.1)
+
 * If you're using this wrapper with our sandbox environment `https://test.instamojo.com/` then you should pass `true` as third argument to the `Instamojo` class while initializing it. `client_id` and `client_secret` token for the same can be obtained from https://test.instamojo.com/developers/ (Details: [Test Or Sandbox Account](https://instamojo.zendesk.com/hc/en-us/articles/208485675-Test-or-Sandbox-Account)).
 
-* If you are using other version of instamojo-php you can refer to their docs from appropriate link below
-  [For v1.1 click here](https://github.com/squareboat/instamojo-php-v2/tree/dev/docs/v1.1)
+
 
 
 ```php
