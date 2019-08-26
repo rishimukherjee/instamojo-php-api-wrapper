@@ -9,8 +9,6 @@ Assists you to programmatically create, edit and delete Links on Instamojo in PH
 * If you're using this wrapper with our sandbox environment `https://test.instamojo.com/` then you should pass `true` as third argument to the `Instamojo` class while initializing it. `client_id` and `client_secret` token for the same can be obtained from https://test.instamojo.com/developers/ (Details: [Test Or Sandbox Account](https://instamojo.zendesk.com/hc/en-us/articles/208485675-Test-or-Sandbox-Account)).
 
 
-
-
 ```php
 $authType = "app/user" /**Depend on app or user based authentication**/
 
