@@ -35,6 +35,21 @@ class GatewayOrderTest extends TestCase
 
     }
 
+    public function test_create_a_gateway_order_for_payment_request()
+    {
+        
+            $gateway_order = $this->instaobj->createGatewayOrderForPaymentRequest(
+                $_ENV['PAYMENT_REQUEST_ID'],
+                [
+                    "name" => "XYZ",
+                    "email" => "xyz@foo.com",
+                    "phone" => "9999999988",
+                ]
+            );
+            $this->assertArrayHasKey('order_id',$gateway_order);
+
+    }
+
 
     public function test_throw_exception_on_invalid_parameter_on_create_a_gateway_order()
     {
@@ -50,6 +65,7 @@ class GatewayOrderTest extends TestCase
 
     }
 
+
     public function test_get_gateway_orders()
     {
         $gateway_orders = $this->instaobj->getGatewayOrders();
@@ -58,7 +74,7 @@ class GatewayOrderTest extends TestCase
 
     }
 
-    public function test_get_gateway_orders_limit()
+    public function test_get_gateway_orders_with_limit_parameter()
     {
         $gateway_orders = $this->instaobj->getGatewayOrders(10,1);
 
@@ -67,7 +83,7 @@ class GatewayOrderTest extends TestCase
 
     }
 
-    public function test_get_gateway_orders_detail()
+    public function test_get_gateway_order_detail()
     {
         $gateway_orders = $this->instaobj->getGatewayOrders();
 
@@ -86,4 +102,6 @@ class GatewayOrderTest extends TestCase
 
         }
     }
+
+    
 }

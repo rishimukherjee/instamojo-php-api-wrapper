@@ -7,4 +7,4 @@ jobs:
     steps:
       - checkout
       - run: composer install
-      - run: vendor/bin/phpunit
+      - run: vendor/bin/phpunit --testdox

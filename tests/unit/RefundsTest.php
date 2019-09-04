@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-class RefundTest extends TestCase
+class RefundsTest extends TestCase
 {
     protected $instaobj;
 
@@ -22,7 +22,7 @@ class RefundTest extends TestCase
         $this->assertTrue(is_array($refunds));
     }
 
-    public function test_list_of_refunds_limit()
+    public function test_list_of_refunds_with_limit_paramter()
     {
         $refunds = $this->instaobj->getRefunds(10);
 
@@ -46,7 +46,7 @@ class RefundTest extends TestCase
         }
     }
 
-    public function test_create_payment_throw_exception_on_invalid_parameters()
+    public function test_create_refund_for_payment_throw_exception_on_invalid_parameters()
     {
         $this->expectException(\Instamojo\Exceptions\ApiException::class);
         $this->instaobj->createRefundForPayment(NULL,[]);
