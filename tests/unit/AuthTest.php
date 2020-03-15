@@ -4,8 +4,6 @@ use PHPUnit\Framework\TestCase;
 
 class AuthTest extends TestCase
 {
-
-
     public function test_application_based_authentication()
     {
         $instaobj = Instamojo\Instamojo::init('app',[

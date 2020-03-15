@@ -6,7 +6,7 @@ use Instamojo\Exceptions\AuthenticationException;
 use Instamojo\Exceptions\InvalidRequestException;
 use Instamojo\Exceptions\MissingParameterException;
 
-class Instamojo {
+final class Instamojo {
     // Constants
     const API_VERSION         = '2';
     const VALID_TYPES         = ['app', 'user'];
@@ -14,11 +14,11 @@ class Instamojo {
     const PRODUCTION_BASE_URL = 'https://api.instamojo.com/';
     
     const URIS = [
-        "auth"              => "oauth2/token/",
-        "payments"          => "v".self::API_VERSION."/payments/",
-        "payment_requests"  => "v".self::API_VERSION."/payment_requests/",
-        "gateway_orders"    => "v".self::API_VERSION."/gateway/orders/",
-        "refunds"           => "v".self::API_VERSION."/refunds/",
+        'auth'              => 'oauth2/token/',
+        'payments'          => 'v'.self::API_VERSION.'/payments/',
+        'payment_requests'  => 'v'.self::API_VERSION.'/payment_requests/',
+        'gateway_orders'    => 'v'.self::API_VERSION.'/gateway/orders/',
+        'refunds'           => 'v'.self::API_VERSION.'/refunds/',
     ];
 
   
@@ -161,7 +161,20 @@ class Instamojo {
      */
     public function __toString()
     {
-        return sprintf("Instamojo {\nauth_type=%s, \nclient_id=%s, \nclient_secret=%s, \nbase_url=%s, \naccess_token=%s \n}", $this->getAuthType(), $this->getClientId(), $this->getClientSecret(), $this->getBaseUrl(), $this->getAccessToken());
+        return sprintf(
+            'Instamojo {'.
+            '\nauth_type=%s,'.
+            '\nclient_id=%s,'.
+            '\nclient_secret=%s,'.
+            '\nbase_url=%s,'.
+            '\naccess_token=%s'.
+            '\n}',
+            $this->getAuthType(),
+            $this->getClientId(),
+            $this->getClientSecret(),
+            $this->getBaseUrl(),
+            $this->getAccessToken()
+        );
     }
 
     /**
@@ -265,7 +278,7 @@ class Instamojo {
             throw new InvalidRequestException('Access token not available');
         }
 
-        $headers[] = "Authorization: Bearer ".Instamojo::$accessToken;
+        $headers[] = 'Authorization: Bearer '.Instamojo::$accessToken;
 
         return $headers;        
     }
@@ -458,7 +471,7 @@ class Instamojo {
     public function getPaymentRequestDetails($id)
     {
 
-        $response = $this->request_api_data('GET', Instamojo::URIS['payment_requests'] . $id ."/");
+        $response = $this->request_api_data('GET', Instamojo::URIS['payment_requests'] . $id .'/');
         
         return $response;
     }
@@ -503,7 +516,7 @@ class Instamojo {
         //phone
         $data['phone'] = (!empty($params['phone'])) ? $params['phone'] : null;
         
-        $response = $this->request_api_data('POST', Instamojo::URIS['gateway_orders'] . "payment-request/", $data);
+        $response = $this->request_api_data('POST', Instamojo::URIS['gateway_orders'] . 'payment-request/', $data);
         
         return $response;
     }
@@ -518,7 +531,7 @@ class Instamojo {
      */
     public function getGatewayOrder($id)
     {
-        $response = $this->request_api_data('GET', Instamojo::URIS['gateway_orders'] . "id:$id/");
+        $response = $this->request_api_data('GET', Instamojo::URIS['gateway_orders'] . 'id:$id/');
         
         return $response;
     }
