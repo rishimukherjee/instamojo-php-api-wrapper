@@ -21,9 +21,6 @@ final class Instamojo {
         'refunds'           => 'v'.self::API_VERSION.'/refunds/',
     ];
 
-  
-
-
     // Static Variables
 
     /**
@@ -178,6 +175,17 @@ final class Instamojo {
     }
 
     /**
+     * Create a new Instamojo Object.
+     * Doesn't have any default values.
+     * 
+     * @return void
+     */
+    private function __construct()
+    {
+       //     
+    }
+
+    /**
      * Initializes the Instamojo environment with default values 
      * and returns a singleton object of Instamojo class.
      * 
@@ -189,37 +197,28 @@ final class Instamojo {
      */
     static function init($type='app', $params, $test=false)
     {
-        // $scope = isset($params['scope']) ? $params['scope'] : NULL;
+        self::validateTypeParams($type, $params);
+        self::$authType     = $type;
+        self::$clientId     = $params['client_id'];
+        self::$clientSecret = $params['client_secret'];
+        self::$username     = isset($params['username']) ? $params['username'] : '';
+        self::$password     = isset($params['password']) ? $params['password'] : '';
+        self::$baseUrl      = Instamojo::PRODUCTION_BASE_URL;
+        self::$scope        = isset($params['scope']) ? $params['scope'] : null;
 
-        // if (self::$thisObj != null && (self::$scope == $scope || $scope == NULL ) ) {
-            
-        //     return self::$thisObj;
+        if ($test) {
+            self::$baseUrl = Instamojo::TEST_BASE_URL;
+        }
 
-        // } else {
-            
-            self::validateTypeParams($type, $params);
-            self::$authType     = $type;
-            self::$clientId     = $params['client_id'];
-            self::$clientSecret = $params['client_secret'];
-            self::$username     = isset($params['username']) ? $params['username'] : '';
-            self::$password     = isset($params['password']) ? $params['password'] : '';
-            self::$baseUrl      = Instamojo::PRODUCTION_BASE_URL;
-            self::$scope        = isset($params['scope']) ? $params['scope'] : null;
+        self::$thisObj = new Instamojo();
 
-            if ($test) {
-                self::$baseUrl = Instamojo::TEST_BASE_URL;
-            }
+        $auth_response = self::$thisObj->auth();
+        
+        self::$accessToken  = $auth_response['access_token'];
+        self::$refreshToken = isset($auth_response['refresh_token']) ? $auth_response['refresh_token'] : '';
+        self::$scope = isset($auth_response['scope']) ? $auth_response['scope'] : '';
 
-            self::$thisObj = new Instamojo();
-
-            $auth_response = self::$thisObj->auth();
-         
-            self::$accessToken  = $auth_response['access_token'];
-            self::$refreshToken = isset($auth_response['refresh_token']) ? $auth_response['refresh_token'] : '';
-            self::$scope = isset($auth_response['scope']) ? $auth_response['scope'] : '';
-
-            return self::$thisObj;
-       // }
+        return self::$thisObj;
     }
 
     /**
@@ -340,12 +339,12 @@ final class Instamojo {
         
         $response = $this->request_api_data('POST', Instamojo::URIS['auth'], $data);
         
-        //check for access token
+        // check for access token
         if (!isset($response['access_token'])) {
             throw new AuthenticationException();
         }
 
-        //check refresh token, incase of auth refresh
+        // check refresh token, incase of auth refresh
         if ($refresh) {
             if (!isset($response['refresh_token'])) {
                 throw new AuthenticationException();
@@ -403,16 +402,16 @@ final class Instamojo {
     {
         $data = [];
 
-        //transaction id
+        // transaction id
         $data['transaction_id'] = (!empty($params['transaction_id'])) ? $params['transaction_id'] : null;
 
-        //refund type
+        // refund type
         $data['type'] = (!empty($params['type'])) ? $params['type'] : null;
 
-        //explaination body
+        // explaination body
         $data['body'] = (!empty($params['body'])) ? $params['body'] : null;
 
-        //refund amount
+        // refund amount
         $data['refund_amount'] = (!empty($params['refund_amount'])) ? $params['refund_amount'] : null;
        
         $response = $this->request_api_data('POST', Instamojo::URIS['payments'] . $payment_id . '/refund/', $data);
@@ -502,18 +501,18 @@ final class Instamojo {
      */
     public function createGatewayOrderForPaymentRequest($payment_request_id, $params)
     {
-        //payment request id
+        // payment request id
         $data = [
             'id' => $payment_request_id
         ];
 
-        //name
+        // name
         $data['name'] = (!empty($params['name'])) ? $params['name'] : null;
 
-        //email
+        // email
         $data['email'] = (!empty($params['email'])) ? $params['email'] : null;
 
-        //phone
+        // phone
         $data['phone'] = (!empty($params['phone'])) ? $params['phone'] : null;
         
         $response = $this->request_api_data('POST', Instamojo::URIS['gateway_orders'] . 'payment-request/', $data);

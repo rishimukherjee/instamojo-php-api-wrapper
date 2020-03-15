@@ -20,13 +20,13 @@
         $method = (string) $method;
         $data = (array) $data;
 
-        $package_name = "instamojo-php";
-        $package_version="2.0";
+        $package_name = 'instamojo-php';
+        $package_version='2.0';
         $os = php_uname('s');
         $os_version = php_uname('r');
         $php_version =  phpversion();
 
-        $userAgent = $package_name."/".$package_version." ".$os."/".$os_version." "."php/".$php_version;
+        $userAgent = $package_name.'/'.$package_version.' '.$os.'/'.$os_version.' '.'php/'.$php_version;
 
         $headers['User-Agent'] = $userAgent;
 
@@ -68,11 +68,18 @@
       
         if($error_number != 0){
             if($error_number == 60){
-                throw new InvalidRequestException("Something went wrong. cURL raised an error with number: $error_number and message: $error_message. " .
-                                    "Please check http://stackoverflow.com/a/21114601/846892 for a fix." . PHP_EOL);
+                throw new InvalidRequestException(
+                    'Something went wrong. cURL raised an error with number: '.
+                    $error_number.' and message: '.$error_message.
+                    'Please check http://stackoverflow.com/a/21114601/846892 '.
+                    'for a fix.'.PHP_EOL
+                );
             }
             else{
-                throw new InvalidRequestException("Something went wrong. cURL raised an error with number: $error_number and message: $error_message." . PHP_EOL);
+                throw new InvalidRequestException(
+                    'Something went wrong. cURL raised an error with number: '.
+                    $error_number.' and message: '.$error_message.
+                    '.'.PHP_EOL);
             }
         }
 
