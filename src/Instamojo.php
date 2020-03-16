@@ -175,15 +175,10 @@ final class Instamojo {
     }
 
     /**
-     * Create a new Instamojo Object.
-     * Doesn't have any default values.
-     * 
-     * @return void
+     * __costruct method is defined as private,
+     * so "new Instamojo()" will not work
      */
-    private function __construct()
-    {
-       //     
-    }
+    private function __construct() {}
 
     /**
      * Initializes the Instamojo environment with default values 
@@ -597,4 +592,22 @@ final class Instamojo {
     public function getRefundDetails($id) {
         return $this->request_api_data('GET', Instamojo::URIS['refunds'] . $id . '/');
     }
+
+    /**
+     * __clone method is defined as private,
+     * so nobody can clone the instance
+     */
+    private function __clone() {}
+
+    /**
+     * __wakeup method is defined as private,
+     * so nobody can unserialize the instance
+     */
+    private function __wakeup() {}
+
+    /**
+     * __sleep method is defined as private,
+     * so nobody can serialize the instance
+     */
+    private function __sleep() {}
 }
