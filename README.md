@@ -2,12 +2,7 @@
 
 Assists you to programmatically create, edit and delete Links on Instamojo in PHP.
 
-**Note**: 
-* If you are using other version of instamojo-php you can refer to their docs from appropriate link below
-  * [v1.1](docs/v1.1)
-
-* If you're using this wrapper with our sandbox environment `https://test.instamojo.com/` then you should pass `true` as third argument to the `Instamojo` class while initializing it. `client_id` and `client_secret` token for the same can be obtained from https://test.instamojo.com/developers/ (Details: [Test Or Sandbox Account](https://instamojo.zendesk.com/hc/en-us/articles/208485675-Test-or-Sandbox-Account)).
-
+**Note**: If you're using this wrapper with our sandbox environment `https://test.instamojo.com/` then you should pass `true` as third argument to the `Instamojo` class while initializing it. `client_id` and `client_secret` token for the same can be obtained from <https://test.instamojo.com/developers/> (Details: [Test Or Sandbox Account](https://instamojo.zendesk.com/hc/en-us/articles/208485675-Test-or-Sandbox-Account)).
 
 ```php
 $authType = "app/user" /**Depend on app or user based authentication**/
@@ -17,7 +12,7 @@ $api = Instamojo\Instamojo::init($authType,[
         "client_secret" => 'XXXXQWE',
         "username" => 'FOO', /** In case of user based authentication**/
         "password" => 'XXXXXXXX' /** In case of user based authentication**/
-       
+
     ],true); /** true for sandbox enviorment**/
 
 ```
@@ -25,11 +20,10 @@ $api = Instamojo\Instamojo::init($authType,[
 ## Installing via [Composer](https://getcomposer.org/)
 
 ```bash
-$ php composer.phar require instamojo/instamojo-php
+php composer.phar require instamojo/instamojo-php
 ```
 
 **Note**: If you're not using Composer then directly include the contents of `src` directory in your project.
-
 
 ## Usage
 
@@ -39,10 +33,9 @@ $api = Instamojo\Instamojo::init($authType,[
         "client_secret" => 'XXXXQWE',
         "username" => 'FOO', /** In case of user based authentication**/
         "password" => 'XXXXXXXX' /** In case of user based authentication**/
-       
+
     ]);
 ```
-
 
 ### Create a new Payment Request
 
@@ -65,17 +58,20 @@ catch (Exception $e) {
 This will give you JSON object containing details of the Payment Request that was just created with `longurl` key provide you instamojo-payment-url.
 
 ### Recommended seamless checkout Option
+
  You can render your Instamojo checkout form and collect payments on your webpage with just the instamojo-payment-url obtained in `createPaymentRequest()` using JS based seamless checkout library. To know more how its work [Click here](https://docs.instamojo.com/page/seamless-checkout).
 
 ## Payment Request Creation Parameters
 
 ### Required
-  * `purpose`: Purpose of the payment request.
-  * `amount`: The amount for the request. The minimum amount is 9. And the maximum is 200000.
+
+* `purpose`: Purpose of the payment request.
+* `amount`: The amount for the request. The minimum amount is 9. And the maximum is 200000.
 
 ### Optional
-  * `buyer_name`: Name of the payer.
-  * `email`: Email of the payer. 
+
+* `buyer_name`: Name of the payer.
+  * `email`: Email of the payer.
   * `phone`: Phone number of the payer.
   * `send_email`: Set this to `true` if you want to send email to the payer if email is specified. If email is not specified then an error is raised. (default value: `false`)
   * `send_sms`: Set this to `true` if you want to send SMS to the payer if phone is specified. If phone is not specified then an error is raised. (default value: `false`)
@@ -86,9 +82,6 @@ This will give you JSON object containing details of the Payment Request that wa
   * `partner_fee` : This describes the fee that you would collect. It can be either a fixed amount, or a percentage of the original amount, depending on the value of `partner_fee_type`.
   * `mark_fulfilled` : Flag to determine if you want to put the payment on hold until you explicitly fulfil it. If `mark_fulfilled` is `True` the payment will be paid out to the merchant. If `mark_fulfilled` is `False`, then the payment will be put on hold until you explicitly fulfil the payment. See Fulfil a Payment below on how to fulfil a payment.
   * `expires_at` : Time after which the payment request will be expired in UTC timestamp. Max value is 600 seconds. Default is Null.
-    
-
-
 
 ### Get the status or details of a Payment Request
 
@@ -102,7 +95,6 @@ catch (Exception $e) {
 }
 ```
 
-
 This will give you JSON object containing details of the Payment Request and the payments related to it.
 Key for payments is `'payments'`.
 
@@ -112,7 +104,7 @@ Here `['PAYMENT REQUEST ID']` is the value of `'id'` key returned by the `create
 
 ```php
 try {
-    $response = $api->getPaymentRequests(); 
+    $response = $api->getPaymentRequests();
     print_r($response);
 }
 catch (Exception $e) {
@@ -138,7 +130,7 @@ $response = $api->getPaymentRequests(50, 1);
 
 ```php
 try {
-    $response = $api->getPayments(); 
+    $response = $api->getPayments();
     print_r($response);
 }
 catch (Exception $e) {
@@ -154,7 +146,6 @@ getPayments() also accepts optional parameters for pagination.
 getPayments($limit=null, $page=null)
 ```
 
-
 For example:
 
 ```php
@@ -162,7 +153,6 @@ $response = $api->getPayments(50, 1);
 ```
 
 ### Get the  details of a Payment
-
 
 ```php
 try {
@@ -174,11 +164,9 @@ catch (Exception $e) {
 }
 ```
 
-
 This will give you JSON object containing details of the Payment.
 
 Here `['PAYMENT ID']` is the value of `'id'` key returned by the `getPayments()` query.
-
 
 ### Create a Gateway Order
 
@@ -201,7 +189,6 @@ catch (Exception $e) {
 
 This will give you JSON object containing details of the order in `order` key and payments options in `payment_options` key.
 
-
 ### Create a Gateway Order For payment request
 
 ```php
@@ -217,10 +204,10 @@ catch (Exception $e) {
     print('Error: ' . $e->getMessage());
 }
 ```
+
 `$payment_request_id` id the `id` key obtained in `createPaymentRequest()` method.
 
 This will give you JSON object containing with created `order_id` key.
-
 
 ### Get the  details of a Gateway Order
 
@@ -238,12 +225,11 @@ This will give you JSON object containing details of the  Gateway Order.
 
 Here `['ORDER ID']` is the value of `'id'` key returned by the `createGatewayOrder()` query.
 
-
 ### Get a list of all Gateway Order
 
 ```php
 try {
-    $response = $api->getGatewayOrders(); 
+    $response = $api->getGatewayOrders();
     print_r($response);
 }
 catch (Exception $e) {
@@ -284,7 +270,6 @@ catch (Exception $e) {
 
 This will give you JSON object containing refund details in `refund` key.
 
-
 ### Get the details of a Refund
 
 ```php
@@ -299,14 +284,11 @@ catch (Exception $e) {
 
 This will give you JSON object containing details of the  Refund.
 
-
-
-
 ### Get a list of all Refunds
 
 ```php
 try {
-    $response = $api->getRefunds(); 
+    $response = $api->getRefunds();
     print_r($response);
 }
 catch (Exception $e) {
@@ -328,5 +310,4 @@ For example:
 $response = $api->getRefunds(50, 1);
 ```
 
-Further documentation is available at https://docs.instamojo.com/v2/docs
-
+Further documentation is available at <https://docs.instamojo.com/v2/docs>

@@ -6,7 +6,7 @@ use Instamojo\Exceptions\AuthenticationException;
 use Instamojo\Exceptions\InvalidRequestException;
 use Instamojo\Exceptions\MissingParameterException;
 
-class Instamojo {
+final class Instamojo {
     // Constants
     const API_VERSION         = '2';
     const VALID_TYPES         = ['app', 'user'];
@@ -14,15 +14,12 @@ class Instamojo {
     const PRODUCTION_BASE_URL = 'https://api.instamojo.com/';
     
     const URIS = [
-        "auth"              => "oauth2/token/",
-        "payments"          => "v".self::API_VERSION."/payments/",
-        "payment_requests"  => "v".self::API_VERSION."/payment_requests/",
-        "gateway_orders"    => "v".self::API_VERSION."/gateway/orders/",
-        "refunds"           => "v".self::API_VERSION."/refunds/",
+        'auth'              => 'oauth2/token/',
+        'payments'          => 'v'.self::API_VERSION.'/payments/',
+        'payment_requests'  => 'v'.self::API_VERSION.'/payment_requests/',
+        'gateway_orders'    => 'v'.self::API_VERSION.'/gateway/orders/',
+        'refunds'           => 'v'.self::API_VERSION.'/refunds/',
     ];
-
-  
-
 
     // Static Variables
 
@@ -161,8 +158,27 @@ class Instamojo {
      */
     public function __toString()
     {
-        return sprintf("Instamojo {\nauth_type=%s, \nclient_id=%s, \nclient_secret=%s, \nbase_url=%s, \naccess_token=%s \n}", $this->getAuthType(), $this->getClientId(), $this->getClientSecret(), $this->getBaseUrl(), $this->getAccessToken());
+        return sprintf(
+            'Instamojo {'.
+            '\nauth_type=%s,'.
+            '\nclient_id=%s,'.
+            '\nclient_secret=%s,'.
+            '\nbase_url=%s,'.
+            '\naccess_token=%s'.
+            '\n}',
+            $this->getAuthType(),
+            $this->getClientId(),
+            $this->getClientSecret(),
+            $this->getBaseUrl(),
+            $this->getAccessToken()
+        );
     }
+
+    /**
+     * __costruct method is defined as private,
+     * so "new Instamojo()" will not work
+     */
+    private function __construct() {}
 
     /**
      * Initializes the Instamojo environment with default values 
@@ -176,37 +192,28 @@ class Instamojo {
      */
     static function init($type='app', $params, $test=false)
     {
-        // $scope = isset($params['scope']) ? $params['scope'] : NULL;
+        self::validateTypeParams($type, $params);
+        self::$authType     = $type;
+        self::$clientId     = $params['client_id'];
+        self::$clientSecret = $params['client_secret'];
+        self::$username     = isset($params['username']) ? $params['username'] : '';
+        self::$password     = isset($params['password']) ? $params['password'] : '';
+        self::$baseUrl      = Instamojo::PRODUCTION_BASE_URL;
+        self::$scope        = isset($params['scope']) ? $params['scope'] : null;
 
-        // if (self::$thisObj != null && (self::$scope == $scope || $scope == NULL ) ) {
-            
-        //     return self::$thisObj;
+        if ($test) {
+            self::$baseUrl = Instamojo::TEST_BASE_URL;
+        }
 
-        // } else {
-            
-            self::validateTypeParams($type, $params);
-            self::$authType     = $type;
-            self::$clientId     = $params['client_id'];
-            self::$clientSecret = $params['client_secret'];
-            self::$username     = isset($params['username']) ? $params['username'] : '';
-            self::$password     = isset($params['password']) ? $params['password'] : '';
-            self::$baseUrl      = Instamojo::PRODUCTION_BASE_URL;
-            self::$scope        = isset($params['scope']) ? $params['scope'] : null;
+        self::$thisObj = new Instamojo();
 
-            if ($test) {
-                self::$baseUrl = Instamojo::TEST_BASE_URL;
-            }
+        $auth_response = self::$thisObj->auth();
+        
+        self::$accessToken  = $auth_response['access_token'];
+        self::$refreshToken = isset($auth_response['refresh_token']) ? $auth_response['refresh_token'] : '';
+        self::$scope = isset($auth_response['scope']) ? $auth_response['scope'] : '';
 
-            self::$thisObj = new Instamojo();
-
-            $auth_response = self::$thisObj->auth();
-         
-            self::$accessToken  = $auth_response['access_token'];
-            self::$refreshToken = isset($auth_response['refresh_token']) ? $auth_response['refresh_token'] : '';
-            self::$scope = isset($auth_response['scope']) ? $auth_response['scope'] : '';
-
-            return self::$thisObj;
-       // }
+        return self::$thisObj;
     }
 
     /**
@@ -265,7 +272,7 @@ class Instamojo {
             throw new InvalidRequestException('Access token not available');
         }
 
-        $headers[] = "Authorization: Bearer ".Instamojo::$accessToken;
+        $headers[] = 'Authorization: Bearer '.Instamojo::$accessToken;
 
         return $headers;        
     }
@@ -327,12 +334,12 @@ class Instamojo {
         
         $response = $this->request_api_data('POST', Instamojo::URIS['auth'], $data);
         
-        //check for access token
+        // check for access token
         if (!isset($response['access_token'])) {
             throw new AuthenticationException();
         }
 
-        //check refresh token, incase of auth refresh
+        // check refresh token, incase of auth refresh
         if ($refresh) {
             if (!isset($response['refresh_token'])) {
                 throw new AuthenticationException();
@@ -390,16 +397,16 @@ class Instamojo {
     {
         $data = [];
 
-        //transaction id
+        // transaction id
         $data['transaction_id'] = (!empty($params['transaction_id'])) ? $params['transaction_id'] : null;
 
-        //refund type
+        // refund type
         $data['type'] = (!empty($params['type'])) ? $params['type'] : null;
 
-        //explaination body
+        // explaination body
         $data['body'] = (!empty($params['body'])) ? $params['body'] : null;
 
-        //refund amount
+        // refund amount
         $data['refund_amount'] = (!empty($params['refund_amount'])) ? $params['refund_amount'] : null;
        
         $response = $this->request_api_data('POST', Instamojo::URIS['payments'] . $payment_id . '/refund/', $data);
@@ -458,7 +465,7 @@ class Instamojo {
     public function getPaymentRequestDetails($id)
     {
 
-        $response = $this->request_api_data('GET', Instamojo::URIS['payment_requests'] . $id ."/");
+        $response = $this->request_api_data('GET', Instamojo::URIS['payment_requests'] . $id .'/');
         
         return $response;
     }
@@ -489,21 +496,21 @@ class Instamojo {
      */
     public function createGatewayOrderForPaymentRequest($payment_request_id, $params)
     {
-        //payment request id
+        // payment request id
         $data = [
             'id' => $payment_request_id
         ];
 
-        //name
+        // name
         $data['name'] = (!empty($params['name'])) ? $params['name'] : null;
 
-        //email
+        // email
         $data['email'] = (!empty($params['email'])) ? $params['email'] : null;
 
-        //phone
+        // phone
         $data['phone'] = (!empty($params['phone'])) ? $params['phone'] : null;
         
-        $response = $this->request_api_data('POST', Instamojo::URIS['gateway_orders'] . "payment-request/", $data);
+        $response = $this->request_api_data('POST', Instamojo::URIS['gateway_orders'] . 'payment-request/', $data);
         
         return $response;
     }
@@ -518,7 +525,7 @@ class Instamojo {
      */
     public function getGatewayOrder($id)
     {
-        $response = $this->request_api_data('GET', Instamojo::URIS['gateway_orders'] . "id:$id/");
+        $response = $this->request_api_data('GET', Instamojo::URIS['gateway_orders'] . 'id:$id/');
         
         return $response;
     }
@@ -585,4 +592,22 @@ class Instamojo {
     public function getRefundDetails($id) {
         return $this->request_api_data('GET', Instamojo::URIS['refunds'] . $id . '/');
     }
+
+    /**
+     * __clone method is defined as private,
+     * so nobody can clone the instance
+     */
+    private function __clone() {}
+
+    /**
+     * __wakeup method is defined as private,
+     * so nobody can unserialize the instance
+     */
+    private function __wakeup() {}
+
+    /**
+     * __sleep method is defined as private,
+     * so nobody can serialize the instance
+     */
+    private function __sleep() {}
 }
