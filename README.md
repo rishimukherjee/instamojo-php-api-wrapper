@@ -41,7 +41,7 @@ $api = Instamojo\Instamojo::init($authType,[
 * [Create a payment request](#create_payment)
 * [Get status of Payment request](#get_status_of_payment_request)
 * [Get list of all Payment requests](#get_payment_request_list)
-* [Get list of all Payments](#get_all_payment_requests)
+* [Get list of all Payments](#get_list_of_all_payments)
 * [Get Details of a payment](#get_details_of_a_payment)
 * [Create Gateway order](#create_gateway_order)
 * [Create Gateway order for Payment request](#create_gateway_order_for_payment_request)
@@ -206,7 +206,7 @@ catch (Exception $e) {
 
 This will give you JSON object containing details of the order in `order` key and payments options in `payment_options` key.
 
-### <a name="create_gateway_order_for_payment_req"> Create a Gateway Order For payment request
+### <a name="create_gateway_order_for_payment_request"> Create a Gateway Order For payment request
 
 ```php
 try {
