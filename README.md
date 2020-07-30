@@ -287,6 +287,16 @@ catch (Exception $e) {
 
 This will give you JSON object containing refund details in `refund` key.
 
+Valid values for type parameter:
+
+ * RFD: Duplicate/delayed payment.
+ * TNR: Product/service no longer available.
+ * QFL: Customer not satisfied.
+ * QNR: Product lost/damaged.
+ * EWN: Digital download issue.
+ * TAN: Event was canceled/changed.
+ * PTH: Problem not described above.
+
 ### <a name="get_refund_details"> Get the details of a Refund
 
 ```php
