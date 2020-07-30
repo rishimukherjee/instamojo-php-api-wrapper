@@ -44,7 +44,7 @@ See the Documentation for datailed instructions
  * <a href="https://docs.instamojo.com/v1.1"> v1.1 Documentation </a>
  * <a href="https://docs.instamojo.com/v2"> v2 Documentation </a>
 
-### Table of Content
+## Table of Content
 * [Create a payment request](#create_payment)
 * [Get status of Payment request](#get_status_of_payment_request)
 * [Get list of all Payment requests](#get_payment_request_list)
@@ -84,30 +84,37 @@ This will give you JSON object containing details of the Payment Request that wa
 
  You can render your Instamojo checkout form and collect payments on your webpage with just the instamojo-payment-url obtained in `createPaymentRequest()` using JS based seamless checkout library. To know more how its work [Click here](https://docs.instamojo.com/page/seamless-checkout).
 
-## Payment Request Creation Parameters
+### Payment Request Creation Parameters
 
-### Required
+ ### Required
 
-* `purpose`: Purpose of the payment request.
-* `amount`: The amount for the request. The minimum amount is 9. And the maximum is 200000.
+ * `purpose`: Purpose of the payment request.
+ * `amount`: The amount for the request. The minimum amount is 9. And the maximum is 200000.
 
-### Optional
+ ### Optional
 
-* `buyer_name`: Name of the payer.
-* `email`: Email of the payer.
-* `phone`: Phone number of the payer.
-* `send_email`: Set this to `true` if you want to send email to the payer if email is specified. If email is not specified then an error is raised. (default value: `false`)
-* `send_sms`: Set this to `true` if you want to send SMS to the payer if phone is specified. If phone is not specified then an error is raised. (default value: `false`)
-* `redirect_url`: set this to a thank-you page on your site. Buyers will be redirected here after successful payment.
-* `webhook`: set this to a URL that can accept POST requests made by Instamojo server after successful payment.
-* `allow_repeated_payments`: To disallow multiple successful payments on a Payment Request pass `false` for this field. If this is set to `false` then the link is not accessible publicly after first successful payment, though you can still access it using API(default value: `true`).
-* `partner_fee_type` : Allows you to receive a cut from from payments you facilitate. For fixed fee set this to `fixed`, or for percentage fee set it to `percent`.
-* `partner_fee` : This describes the fee that you would collect. It can be either a fixed amount, or a percentage of the original amount, depending on the value of `partner_fee_type`.
-* `mark_fulfilled` : Flag to determine if you want to put the payment on hold until you explicitly fulfil it. If `mark_fulfilled` is `True` the payment will be paid out to the merchant. If `mark_fulfilled` is `False`, then the payment will be put on hold until you explicitly fulfil the payment. See Fulfil a Payment below on how to fulfil a payment.
-* `expires_at` : Time after which the payment request will be expired in UTC timestamp. Max value is 600 seconds. Default is Null.
+ * `buyer_name`: Name of the payer.
+ * `email`: Email of the payer.
+ * `phone`: Phone number of the payer.
+ * `send_email`: Set this to `true` if you want to send email to the payer if email is specified. If email is not specified then an error is raised. (default 
+ value: `false`)
+ * `send_sms`: Set this to `true` if you want to send SMS to the payer if phone is specified. If phone is not specified then an error is raised. (default value:
+ `false`)
+ * `redirect_url`: set this to a thank-you page on your site. Buyers will be redirected here after successful payment.
+ * `webhook`: set this to a URL that can accept POST requests made by Instamojo server after successful payment.
+ * `allow_repeated_payments`: To disallow multiple successful payments on a Payment Request pass `false` for this field. If this is set to `false` then the link is
+ not accessible publicly after first successful payment, though you can still access it using API(default value: `true`).
+ * `partner_fee_type` : Allows you to receive a cut from from payments you facilitate. For fixed fee set this to `fixed`, or for percentage fee set it to
+ `percent`.
+ * `partner_fee` : This describes the fee that you would collect. It can be either a fixed amount, or a percentage of the original amount, depending on the value
+ of `partner_fee_type`.
+ * `mark_fulfilled` : Flag to determine if you want to put the payment on hold until you explicitly fulfil it. If `mark_fulfilled` is `True` the payment will be
+ paid out to the merchant. If `mark_fulfilled` is `False`, then the payment will be put on hold until you explicitly fulfil the payment. See Fulfil a Payment below
+ on how to fulfil a payment.
+ * `expires_at` : Time after which the payment request will be expired in UTC timestamp. Max value is 600 seconds. Default is Null.
 
 
-### <a name="get_status_of_payment_request"></a> Get the status or details of a Payment Request
+## <a name="get_status_of_payment_request"></a> Get the status or details of a Payment Request
 
 ```php
 try {
@@ -124,7 +131,7 @@ Key for payments is `'payments'`.
 
 Here `['PAYMENT REQUEST ID']` is the value of `'id'` key returned by the `createPaymentRequest()` query.
 
-### <a name="get_payment_request_list"></a> Get a list of all Payment Requests
+## <a name="get_payment_request_list"></a> Get a list of all Payment Requests
 
 ```php
 try {
@@ -150,7 +157,7 @@ For example:
 $response = $api->getPaymentRequests(50, 1);
 ```
 
-### <a name="get_list_of_all_payments"> Get a list of all Payments
+## <a name="get_list_of_all_payments"> Get a list of all Payments
 
 ```php
 try {
@@ -176,7 +183,7 @@ For example:
 $response = $api->getPayments(50, 1);
 ```
 
-### <a name="get_details_of_a_payment"> Get the  details of a Payment
+## <a name="get_details_of_a_payment"> Get the  details of a Payment
 
 ```php
 try {
@@ -192,7 +199,7 @@ This will give you JSON object containing details of the Payment.
 
 Here `['PAYMENT ID']` is the value of `'id'` key returned by the `getPayments()` query.
 
-### <a name="create_gateway_order"> Create a Gateway Order
+## <a name="create_gateway_order"> Create a Gateway Order
 
 ```php
 try {
@@ -213,7 +220,7 @@ catch (Exception $e) {
 
 This will give you JSON object containing details of the order in `order` key and payments options in `payment_options` key.
 
-### <a name="create_gateway_order_for_payment_request"> Create a Gateway Order For payment request
+## <a name="create_gateway_order_for_payment_request"> Create a Gateway Order For payment request
 
 ```php
 try {
@@ -233,7 +240,7 @@ catch (Exception $e) {
 
 This will give you JSON object containing with created `order_id` key.
 
-### <a name="get_gateway_order_details"> Get the details of a Gateway Order
+## <a name="get_gateway_order_details"> Get the details of a Gateway Order
 
 ```php
 try {
@@ -249,7 +256,7 @@ This will give you JSON object containing details of the  Gateway Order.
 
 Here `['ORDER ID']` is the value of `'id'` key returned by the `createGatewayOrder()` query.
 
-### <a name="get_list_of_gateway_orders"> Get a list of all Gateway Order
+## <a name="get_list_of_gateway_orders"> Get a list of all Gateway Order
 
 ```php
 try {
@@ -275,7 +282,7 @@ For example:
 $response = $api->getGatewayOrders(50, 1);
 ```
 
-### <a name="create_refund_for_payment"> Create a Refund for a payment
+## <a name="create_refund_for_payment"> Create a Refund for a payment
 
 ```php
 try {
@@ -304,7 +311,7 @@ Valid values for type parameter:
  * TAN: Event was canceled/changed.
  * PTH: Problem not described above.
 
-### <a name="get_refund_details"> Get the details of a Refund
+## <a name="get_refund_details"> Get the details of a Refund
 
 ```php
 try {
@@ -344,9 +351,7 @@ For example:
 $response = $api->getRefunds(50, 1);
 ```
 
-### <a name="faqs"> Common FAQ's
+## <a name="faqs"> Common FAQ's
 
 * <a href="https://support.instamojo.com/hc/en-us/articles/212214265-How-do-I-get-my-Client-ID-and-Client-Secret-"> How to get your client Id and Client secret </a> 
 
-
-Further documentation is available at <https://docs.instamojo.com/v2/docs>
