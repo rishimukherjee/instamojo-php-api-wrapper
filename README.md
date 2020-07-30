@@ -310,4 +310,8 @@ For example:
 $response = $api->getRefunds(50, 1);
 ```
 
+### Common FAQ's
+
+* <a href="https://support.instamojo.com/hc/en-us/articles/212214265-How-do-I-get-my-Client-ID-and-Client-Secret-"> How to get your client Id and Client secret </a> 
+
 Further documentation is available at <https://docs.instamojo.com/v2/docs>
