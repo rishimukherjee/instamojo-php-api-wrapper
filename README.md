@@ -37,6 +37,13 @@ $api = Instamojo\Instamojo::init($authType,[
     ]);
 ```
 
+## Documentation
+
+See the Documentation for datailed instructions
+
+ * <a href="https://docs.instamojo.com/v1.1"> v1.1 Documentation </a>
+ * <a href="https://docs.instamojo.com/v2"> v2 Documentation </a>
+
 ### Table of Content
 * [Create a payment request](#create_payment)
 * [Get status of Payment request](#get_status_of_payment_request)
