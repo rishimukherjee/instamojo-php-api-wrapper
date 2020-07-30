@@ -37,7 +37,23 @@ $api = Instamojo\Instamojo::init($authType,[
     ]);
 ```
 
-### Create a new Payment Request
+### Table of Content
+* [Create a payment request](#create_payment)
+* [Get status of Payment request](#get_status_of_payment_request)
+* [Get list of all Payment requests](#get_payment_request_list)
+* [Get list of all Payments](#get_all_payment_requests)
+* [Get Details of a payment](#get_details_of_a_payment)
+* [Create Gateway order](#create_gateway_order)
+* [Create Gateway order for Payment request](#create_gateway_order_for_payment_request)
+* [Get Gateway order details](#get_gateway_order_details)
+* [Get list of Gateway orders](#get_list_of_gateway_orders)
+* [Create refund for payments](#create_refund_for_payment)
+* [Get details of a refund](#get_refund_details)
+* [Get list of refunds](#get_list_of_refunds)
+* [Common FAQ's](#faqs)
+
+
+### <a name="create_payment"></a> Create a new Payment Request
 
 ```php
 try {
@@ -83,7 +99,8 @@ This will give you JSON object containing details of the Payment Request that wa
   * `mark_fulfilled` : Flag to determine if you want to put the payment on hold until you explicitly fulfil it. If `mark_fulfilled` is `True` the payment will be paid out to the merchant. If `mark_fulfilled` is `False`, then the payment will be put on hold until you explicitly fulfil the payment. See Fulfil a Payment below on how to fulfil a payment.
   * `expires_at` : Time after which the payment request will be expired in UTC timestamp. Max value is 600 seconds. Default is Null.
 
-### Get the status or details of a Payment Request
+
+### <a name="get_status_of_payment_request"></a> Get the status or details of a Payment Request
 
 ```php
 try {
@@ -100,7 +117,7 @@ Key for payments is `'payments'`.
 
 Here `['PAYMENT REQUEST ID']` is the value of `'id'` key returned by the `createPaymentRequest()` query.
 
-### Get a list of all Payment Requests
+### <a name="get_payment_request_list"></a> Get a list of all Payment Requests
 
 ```php
 try {
@@ -126,7 +143,7 @@ For example:
 $response = $api->getPaymentRequests(50, 1);
 ```
 
-### Get a list of all Payments
+### <a name="get_list_of_all_payments"> Get a list of all Payments
 
 ```php
 try {
@@ -152,7 +169,7 @@ For example:
 $response = $api->getPayments(50, 1);
 ```
 
-### Get the  details of a Payment
+### <a name="get_details_of_a_payment"> Get the  details of a Payment
 
 ```php
 try {
@@ -168,7 +185,7 @@ This will give you JSON object containing details of the Payment.
 
 Here `['PAYMENT ID']` is the value of `'id'` key returned by the `getPayments()` query.
 
-### Create a Gateway Order
+### <a name="create_gateway_order"> Create a Gateway Order
 
 ```php
 try {
@@ -189,7 +206,7 @@ catch (Exception $e) {
 
 This will give you JSON object containing details of the order in `order` key and payments options in `payment_options` key.
 
-### Create a Gateway Order For payment request
+### <a name="create_gateway_order_for_payment_req"> Create a Gateway Order For payment request
 
 ```php
 try {
@@ -209,7 +226,7 @@ catch (Exception $e) {
 
 This will give you JSON object containing with created `order_id` key.
 
-### Get the  details of a Gateway Order
+### <a name="get_gateway_order_details"> Get the details of a Gateway Order
 
 ```php
 try {
@@ -225,7 +242,7 @@ This will give you JSON object containing details of the  Gateway Order.
 
 Here `['ORDER ID']` is the value of `'id'` key returned by the `createGatewayOrder()` query.
 
-### Get a list of all Gateway Order
+### <a name="get_list_of_gateway_orders"> Get a list of all Gateway Order
 
 ```php
 try {
@@ -251,7 +268,7 @@ For example:
 $response = $api->getGatewayOrders(50, 1);
 ```
 
-### Create a Refund for a payment
+### <a name="create_refund_for_payment"> Create a Refund for a payment
 
 ```php
 try {
@@ -270,7 +287,7 @@ catch (Exception $e) {
 
 This will give you JSON object containing refund details in `refund` key.
 
-### Get the details of a Refund
+### <a name="get_refund_details"> Get the details of a Refund
 
 ```php
 try {
@@ -284,7 +301,7 @@ catch (Exception $e) {
 
 This will give you JSON object containing details of the  Refund.
 
-### Get a list of all Refunds
+### <a name="get_list_of_refunds"> Get a list of all Refunds
 
 ```php
 try {
@@ -310,7 +327,7 @@ For example:
 $response = $api->getRefunds(50, 1);
 ```
 
-### Common FAQ's
+### <a name="faqs"> Common FAQ's
 
 * <a href="https://support.instamojo.com/hc/en-us/articles/212214265-How-do-I-get-my-Client-ID-and-Client-Secret-"> How to get your client Id and Client secret </a> 
 
