@@ -82,7 +82,7 @@ This will give you JSON object containing details of the Payment Request that wa
 
 ### Recommended seamless checkout Option
 
- You can render your Instamojo checkout form and collect payments on your webpage with just the instamojo-payment-url obtained in `createPaymentRequest()` using JS based seamless checkout library. To know more how its work [Click here](https://docs.instamojo.com/page/seamless-checkout).
+ You can render your Instamojo checkout form and collect payments on your webpage with just the instamojo-payment-url obtained in `createPaymentRequest()` using JS based seamless checkout library. To know more how its work <a href = "https://docs.instamojo.com/page/seamless-checkout">Click here</a>.
 
 ### Payment Request Creation Parameters
 

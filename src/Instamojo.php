@@ -253,6 +253,11 @@ final class Instamojo {
         }
     }
 
+    /**
+     * Initializes baseUrl property of Instamojo class
+     * 
+     * @return object
+     */
     public function withBaseUrl($baseUrl) 
     {
         self::$baseUrl = $baseUrl;
@@ -362,10 +367,12 @@ final class Instamojo {
     public function getPayments($limit=null, $page=null) {
         $data = [];
 
+        // Check per_page limit
         if (!is_null($limit)) {
             $data['limit'] = $limit;
         }
 
+        // Check page number
         if (!is_null($page)) {
             $data['page'] = $page;
         }
@@ -441,10 +448,12 @@ final class Instamojo {
     {
         $data = [];
 
+        // Check per_page limit
         if (!is_null($limit)) {
             $data['limit'] = $limit;
         }
 
+        // Check page number
         if (!is_null($page)) {
             $data['page'] = $page;
         }
@@ -542,10 +551,12 @@ final class Instamojo {
     public function getGatewayOrders($limit=null, $page=null) {
         $data = [];
 
+        // Check per_page limit
         if (!is_null($limit)) {
             $data['limit'] = $limit;
         }
 
+        // Check page number
         if (!is_null($page)) {
             $data['page'] = $page;
         }
@@ -568,10 +579,12 @@ final class Instamojo {
 
         $data = [];
 
+        // Check per_page limit
         if (!is_null($limit)) {
             $data['limit'] = $limit;
         }
 
+        // Check page number
         if (!is_null($page)) {
             $data['page'] = $page;
         }
