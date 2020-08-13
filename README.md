@@ -301,6 +301,13 @@ catch (Exception $e) {
 
 This will give you JSON object containing refund details in `refund` key.
 
+ ### Required Parameters
+
+ * `type`: Three letter short-code identifying the reason for refund, string type.
+ * `body`: Additonal text explaining the refund, string type.
+ * `refund_amount`: This field can be used to specify the refund amount, string type.
+ * `transaction_id`: To Prevent duplicate case creations due to replay of APIs, string type.
+
 Valid values for type parameter:
 
  * RFD: Duplicate/delayed payment.
